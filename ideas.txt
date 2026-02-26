@@ -1,0 +1,4 @@
+TODO's:
+
+[] Minigame de "geoguessr" chutando o restaurante ou bar correto baseado no mapa.
+[] Criar um area para sugestão de novos restaurantes ou bares.
