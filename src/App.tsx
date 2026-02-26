@@ -417,9 +417,33 @@ function pickRandom<T>(arr: T[]): T {
   return arr[Math.floor(Math.random() * arr.length)];
 }
 
+const FOOD_EMOJIS = ['🍕', '🍔', '🍟', '🌮', '🍣', '🥪', '🍝', '🥗', '🍩', '🍪', '🧁', '🍰', '🥐', '🍳', '🌯', '🍜', '🥟', '🍤', '🍗', '🥓', '🍽️', '☕', '🥤', '🍿'];
+
+const FOOD_FLOAT_COUNT = 24;
+
+function seeded(step: number, seed: number): number {
+  const x = Math.sin(step * 9999 + seed * 12345) * 10000;
+  return x - Math.floor(x);
+}
+
+function useFoodFloats(canEat: boolean) {
+  return useMemo(() => {
+    const seed = canEat ? 1 : 0;
+    return Array.from({ length: FOOD_FLOAT_COUNT }, (_, i) => ({
+      id: i,
+      emoji: FOOD_EMOJIS[i % FOOD_EMOJIS.length],
+      left: seeded(i * 7, seed) * 100,
+      top: seeded(i * 11 + 1, seed) * 100,
+      delay: seeded(i * 13 + 2, seed) * 12,
+      duration: 14 + seeded(i * 17 + 3, seed) * 10,
+      size: 0.9 + seeded(i * 19 + 4, seed) * 1.4,
+      wobble: (seeded(i * 23 + 5, seed) * 20) - 10,
+    }));
+  }, [canEat]);
+}
+
 export default function App() {
-  const { canEats, formattedTime, currentTime, lunchPhase } = useClock();
-  const canEat = true;
+  const { canEat, formattedTime, currentTime, lunchPhase } = useClock();
   const { width, height } = useWindowSize();
   const phrase = useMemo(
     () => pickRandom(PHRASE_BY_PHASE[lunchPhase] as string[]),
@@ -433,9 +457,32 @@ export default function App() {
   const restaurant = RESTAURANTS[dayIndex];
   const mapsLink = `https://www.google.com/maps/dir/${encodeURIComponent(ORIGIN)}/${encodeURIComponent(restaurant.address)}&travelmode=walking`;
   const mapsEmbedUrl = `https://maps.google.com/maps?saddr=${encodeURIComponent(ORIGIN)}&daddr=${encodeURIComponent(restaurant.address)}&output=embed`;
-  
+
+  const foodFloats = useFoodFloats(canEat);
+
   return (
     <div className={`app ${canEat ? 'app--success' : 'app--failure'}`}>
+      {!canEat && (
+      <div className="food-layer" aria-hidden>
+        {foodFloats.map((f) => (
+          <span
+            key={f.id}
+            className={`food-float food-float--${canEat ? 'celebrate' : 'sarcastic'}`}
+            style={{
+              left: `${f.left}%`,
+              ...(canEat ? { top: `${f.top}%` } : {}),
+              animationDelay: `${f.delay}s`,
+              animationDuration: `${f.duration}s`,
+              fontSize: `${f.size}rem`,
+              ['--wobble' as string]: `${f.wobble}deg`,
+            } as React.CSSProperties}
+          >
+            {f.emoji}
+          </span>
+        ))}
+      </div>
+      )}
+
       {canEat && (
         <Confetti
           width={width}
