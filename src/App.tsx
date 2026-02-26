@@ -1064,7 +1064,7 @@ function WindowStatus({
   return null;
 }
 
-const WHATSAPP_APP_URL = 'https://jah-pod-almossar-two.vercel.app';
+const WHATSAPP_APP_URL = 'https://jah-pod-al-mossar.com.br';
 
 const WA_ICON = (
   <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18" aria-hidden>
