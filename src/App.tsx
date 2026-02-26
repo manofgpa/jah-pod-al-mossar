@@ -1019,13 +1019,6 @@ function formatMinutesUntil(minutes: number): string {
   return `${h}h ${m}min`;
 }
 
-function formatDateLabel(dateStr: string): string {
-  const [year, month, day] = dateStr.split('-').map(Number);
-  const d = new Date(year, month - 1, day);
-  const days = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
-  return `${days[d.getDay()]} ${String(day).padStart(2, '0')}/${String(month).padStart(2, '0')}`;
-}
-
 function StreakBadge({ streak }: { streak: number }) {
   if (streak < 1) return null;
   return (
@@ -1094,26 +1087,8 @@ export default function App() {
   const foodFloats = useFoodFloats(canGo, mode);
 
   // Gamification
-  const { streak, todayRating, visits, ratings, markVisit, rateToday } = useGameStats();
+  const { streak, todayRating, visits, markVisit, rateToday } = useGameStats();
   const visitedToday = visits.includes(todayUtc);
-  const [historyOpen, setHistoryOpen] = useState(false);
-  const weekHistory = useMemo(() => {
-    const today = new Date();
-    return Array.from({ length: 7 }, (_, i) => {
-      const d = new Date(today);
-      d.setDate(d.getDate() - (6 - i));
-      const dateStr = d.toISOString().slice(0, 10);
-      const indices = getSuggestionIndicesForDate(d);
-      const name =
-        mode === 'lunch' ? RESTAURANTS[indices.lunch].name : BARS[indices.drink].name;
-      return {
-        date: dateStr,
-        restaurant: name,
-        rating: ratings[dateStr] ?? null,
-        visited: visits.includes(dateStr),
-      };
-    });
-  }, [visits, ratings, mode]);
 
   // Notifications
   const { permission, requestPermission } = useNotifications();
