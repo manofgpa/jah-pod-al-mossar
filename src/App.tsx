@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import Confetti from 'react-confetti';
 import { useWindowSize } from 'react-use';
 import { useClock, type AppMode } from './hooks/useClock';
@@ -584,6 +584,10 @@ export default function App() {
   const mapsEmbedUrl = `https://maps.google.com/maps?saddr=${encodeURIComponent(ORIGIN)}&daddr=${encodeURIComponent(mode === 'lunch' ? restaurant.address : bar.address)}&output=embed`;
 
   const foodFloats = useFoodFloats(canGo, mode);
+
+  useEffect(() => {
+    document.body.style.backgroundColor = canGo ? '#00c853' : '#d32f2f';
+  }, [canGo]);
 
   return (
     <div className={`app ${canGo ? 'app--success' : 'app--failure'}`}>
