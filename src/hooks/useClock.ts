@@ -57,7 +57,12 @@ export function useClock(mode: AppMode) {
     second: '2-digit',
   });
 
-  return { currentTime, canGo, phase, formattedTime };
+  const totalMinutes = currentTime.getHours() * 60 + currentTime.getMinutes();
+  const w = mode === 'lunch' ? LUNCH : DRINK;
+  const minutesUntilOpen = totalMinutes < w.start ? w.start - totalMinutes : 0;
+  const windowProgress = canGo ? (totalMinutes - w.start) / (w.end - w.start) : null;
+
+  return { currentTime, canGo, phase, formattedTime, minutesUntilOpen, windowProgress };
 }
 
 /** For backwards compatibility and labels */

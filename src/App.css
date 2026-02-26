@@ -320,3 +320,243 @@
   width: 100%;
   height: 400px;
 }
+
+/* ── Top bar controls row ────────────────────────────── */
+.app__top-bar__controls {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+/* ── Notification button ──────────────────────────────── */
+.notif-btn {
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 999px;
+  color: #fff;
+  width: 2.5rem;
+  height: 2.5rem;
+  font-size: 1.15rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+  flex-shrink: 0;
+}
+
+.notif-btn--active {
+  background: rgba(255, 255, 255, 0.35);
+  border-color: rgba(255, 255, 255, 0.7);
+}
+
+.notif-btn:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+/* ── Window countdown / progress ─────────────────────── */
+.window-countdown {
+  font-size: clamp(1rem, 3.5vw, 1.35rem);
+  font-weight: 700;
+  opacity: 0.9;
+  margin: 0;
+  animation: wc-pulse 2s ease-in-out infinite;
+}
+
+@keyframes wc-pulse {
+  0%,
+  100% {
+    opacity: 0.9;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.window-next {
+  font-size: 0.9rem;
+  opacity: 0.7;
+  margin: 0;
+}
+
+.window-progress {
+  width: 100%;
+  max-width: 420px;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.25);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.window-progress__fill {
+  height: 100%;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.9);
+  transition: width 1s linear;
+}
+
+.window-progress__fill--urgent {
+  background: #ff6f00;
+}
+
+/* ── Streak badge ─────────────────────────────────────── */
+.streak-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 999px;
+  padding: 0.3rem 0.8rem;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 0.02em;
+}
+
+/* ── Game action buttons ──────────────────────────────── */
+.game-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 0.5rem;
+}
+
+.visit-btn {
+  background: rgba(255, 255, 255, 0.22);
+  color: #fff;
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  border-radius: 999px;
+  padding: 0.6rem 1.2rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.visit-btn:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.visit-btn--done {
+  background: rgba(255, 255, 255, 0.35);
+}
+
+.rating-btn {
+  background: rgba(255, 255, 255, 0.15);
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  border-radius: 999px;
+  width: 2.5rem;
+  height: 2.5rem;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: inherit;
+}
+
+.rating-btn--active {
+  background: rgba(255, 255, 255, 0.35);
+  border-color: #fff;
+}
+
+/* ── WhatsApp button ─────────────────────────────────── */
+.whatsapp-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  background: #25d366;
+  color: #fff;
+  font-size: 0.95rem;
+  font-weight: 700;
+  padding: 0.6rem 1.2rem;
+  border-radius: 999px;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  transition: filter 0.2s ease;
+}
+
+.whatsapp-btn:hover {
+  filter: brightness(1.12);
+}
+
+/* ── Week history accordion ───────────────────────────── */
+.week-accordion {
+  width: 100%;
+  max-width: 500px;
+  margin-top: 0.5rem;
+}
+
+.week-accordion__toggle {
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 12px;
+  color: #fff;
+  font-size: 0.9rem;
+  font-weight: 600;
+  width: 100%;
+  padding: 0.6rem 1rem;
+  cursor: pointer;
+  text-align: left;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: background 0.2s;
+}
+
+.week-accordion__toggle:hover {
+  background: rgba(255, 255, 255, 0.22);
+}
+
+.week-accordion__body {
+  margin-top: 0.5rem;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.week-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  font-size: 0.82rem;
+  color: #fff;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.week-row:last-child {
+  border-bottom: none;
+}
+
+.week-row__date {
+  opacity: 0.65;
+  min-width: 4.8rem;
+  flex-shrink: 0;
+}
+
+.week-row__restaurant {
+  flex: 1;
+  opacity: 0.9;
+  text-align: left;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.week-row__visited {
+  font-size: 0.85rem;
+  flex-shrink: 0;
+}
+
+.week-row__rating {
+  font-size: 0.9rem;
+  flex-shrink: 0;
+}
