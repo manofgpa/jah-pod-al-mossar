@@ -597,7 +597,7 @@ export default function App() {
             className={`mode-switch__btn ${mode === 'lunch' ? 'mode-switch__btn--active' : ''}`}
             onClick={() => setMode('lunch')}
           >
-            Almossar
+            Al-mossar
           </button>
           <button
             type="button"
