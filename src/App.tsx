@@ -493,6 +493,12 @@ const RESTAURANTS = [
     "description": "Restaurante canadense com comida rápida e consistente.",
     "address": "Rua dos Pinheiros, 1183 - Pinheiros, São Paulo - SP, 05422-012"
   },
+  {
+    "name": "AYA",
+    "cuisine": "Japonesa",
+    "description": "Local moderno e aconchegante que oferece pratos japoneses tradicionais e exclusivos.",
+    "address": "Av. Pedroso de Morais, 141 - Pinheiros, São Paulo - SP, 05419-000"
+  },
 ];
 
 const BARS = [
@@ -540,19 +546,19 @@ function useFoodFloats(canGo: boolean, mode: AppMode) {
 
 export default function App() {
   const [mode, setMode] = useState<AppMode>('lunch');
-  const { canGo, formattedTime, currentTime, phase } = useClock(mode);
+  const { canGo, formattedTime, phase } = useClock(mode);
   const { width, height } = useWindowSize();
   const phrase = useMemo(
     () => pickRandom((mode === 'lunch' ? PHRASE_BY_PHASE : PHRASE_BY_PHASE_DRINK)[phase] as string[]),
     [mode, phase],
   );
 
-  const dayIndex = useMemo(
-    () => Math.floor(currentTime.getTime() / 86_400_000) % (mode === 'lunch' ? RESTAURANTS.length : BARS.length),
-    [currentTime, mode],
-  );
-  const restaurant = RESTAURANTS[dayIndex % RESTAURANTS.length];
-  const bar = BARS[dayIndex % BARS.length];
+  const [suggestionIndices] = useState(() => ({
+    lunch: Math.floor(Math.random() * RESTAURANTS.length),
+    drink: Math.floor(Math.random() * BARS.length),
+  }));
+  const restaurant = RESTAURANTS[suggestionIndices.lunch];
+  const bar = BARS[suggestionIndices.drink];
   const mapsLink = `https://www.google.com/maps/dir/${encodeURIComponent(ORIGIN)}/${encodeURIComponent(mode === 'lunch' ? restaurant.address : bar.address)}&travelmode=walking`;
   const mapsEmbedUrl = `https://maps.google.com/maps?saddr=${encodeURIComponent(ORIGIN)}&daddr=${encodeURIComponent(mode === 'lunch' ? restaurant.address : bar.address)}&output=embed`;
 
@@ -615,7 +621,7 @@ export default function App() {
         <p className="app__clock">{formattedTime}</p>
 
         <h1 className="app__title">
-          {canGo ? (mode === 'lunch' ? 'JAH POD' : 'JAH BEBER') : '🤔'}
+          {canGo ?  'JAH POD' : '🤔'}
         </h1>
 
         <div className={`app__hero ${canGo ? 'app__hero--success' : 'app__hero--failure'}`}>
