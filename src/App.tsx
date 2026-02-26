@@ -512,6 +512,8 @@ function pickRandom<T>(arr: T[]): T {
 
 const FOOD_EMOJIS = ['🍕', '🍔', '🍟', '🌮', '🍣', '🥪', '🍝', '🥗', '🍩', '🍪', '🧁', '🍰', '🥐', '🍳', '🌯', '🍜', '🥟', '🍤', '🍗', '🥓', '🍽️', '☕', '🥤', '🍿'];
 
+const DRINK_EMOJIS = ['🍺', '🍷', '🥃', '🍸', '🍹', '🍻', '🥂', '🧃', '🧋', '🥤', '🍾', '🍶', '🧉', '🍵', '☕', '🧊', '🥃', '🍺', '🍷', '🍸', '🍹', '🍻', '🥂', '🧃'];
+
 const FOOD_FLOAT_COUNT = 24;
 
 function seeded(step: number, seed: number): number {
@@ -519,12 +521,13 @@ function seeded(step: number, seed: number): number {
   return x - Math.floor(x);
 }
 
-function useFoodFloats(canEat: boolean) {
+function useFoodFloats(canGo: boolean, mode: AppMode) {
   return useMemo(() => {
-    const seed = canEat ? 1 : 0;
+    const seed = canGo ? 1 : 0;
+    const emojis = mode === 'drink' ? DRINK_EMOJIS : FOOD_EMOJIS;
     return Array.from({ length: FOOD_FLOAT_COUNT }, (_, i) => ({
       id: i,
-      emoji: FOOD_EMOJIS[i % FOOD_EMOJIS.length],
+      emoji: emojis[i % emojis.length],
       left: seeded(i * 7, seed) * 100,
       top: seeded(i * 11 + 1, seed) * 100,
       delay: seeded(i * 13 + 2, seed) * 12,
@@ -532,7 +535,7 @@ function useFoodFloats(canEat: boolean) {
       size: 0.9 + seeded(i * 19 + 4, seed) * 1.4,
       wobble: (seeded(i * 23 + 5, seed) * 20) - 10,
     }));
-  }, [canEat]);
+  }, [canGo, mode]);
 }
 
 export default function App() {
@@ -553,10 +556,31 @@ export default function App() {
   const mapsLink = `https://www.google.com/maps/dir/${encodeURIComponent(ORIGIN)}/${encodeURIComponent(mode === 'lunch' ? restaurant.address : bar.address)}&travelmode=walking`;
   const mapsEmbedUrl = `https://maps.google.com/maps?saddr=${encodeURIComponent(ORIGIN)}&daddr=${encodeURIComponent(mode === 'lunch' ? restaurant.address : bar.address)}&output=embed`;
 
-  const foodFloats = useFoodFloats(canGo);
+  const foodFloats = useFoodFloats(canGo, mode);
 
   return (
     <div className={`app ${canGo ? 'app--success' : 'app--failure'}`}>
+      <div className="mode-switch" role="tablist" aria-label="Modo almoço ou beber">
+        <button
+          type="button"
+          role="tab"
+          aria-selected={mode === 'lunch'}
+          className={`mode-switch__btn ${mode === 'lunch' ? 'mode-switch__btn--active' : ''}`}
+          onClick={() => setMode('lunch')}
+        >
+          Almossar
+        </button>
+        <button
+          type="button"
+          role="tab"
+          aria-selected={mode === 'drink'}
+          className={`mode-switch__btn ${mode === 'drink' ? 'mode-switch__btn--active' : ''}`}
+          onClick={() => setMode('drink')}
+        >
+          Beber
+        </button>
+      </div>
+
       {!canGo && (
       <div className="food-layer" aria-hidden>
         {foodFloats.map((f) => (
@@ -588,25 +612,6 @@ export default function App() {
       )}
 
       <div className="app__content">
-        <div className="mode-switch">
-          <button
-            type="button"
-            className={`mode-switch__btn ${mode === 'lunch' ? 'mode-switch__btn--active' : ''}`}
-            onClick={() => setMode('lunch')}
-            aria-pressed={mode === 'lunch'}
-          >
-            Almoço
-          </button>
-          <button
-            type="button"
-            className={`mode-switch__btn ${mode === 'drink' ? 'mode-switch__btn--active' : ''}`}
-            onClick={() => setMode('drink')}
-            aria-pressed={mode === 'drink'}
-          >
-            Drink
-          </button>
-        </div>
-
         <p className="app__clock">{formattedTime}</p>
 
         <h1 className="app__title">
