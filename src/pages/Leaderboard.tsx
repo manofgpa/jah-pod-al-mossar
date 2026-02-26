@@ -56,27 +56,41 @@ export default function Leaderboard() {
   async function fetchLeaderboard() {
     const { data } = await supabase.from('users').select('id, name, visits(visit_date)');
     if (!data) return;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const rows: UserRow[] = (data as any[])
-      .map((u) => ({
-        id: u.id,
-        name: u.name,
-        streak: calcStreak(u.visits?.map((v: { visit_date: string }) => v.visit_date) ?? []),
-        totalVisits: u.visits?.length ?? 0,
-      }))
+    // Group by name — same person on multiple devices counts once
+    const nameMap: Record<string, Set<string>> = {};
+    for (const u of data as any[]) {
+      const dates: string[] = u.visits?.map((v: { visit_date: string }) => v.visit_date) ?? [];
+      if (!nameMap[u.name]) nameMap[u.name] = new Set();
+      dates.forEach((d) => nameMap[u.name].add(d));
+    }
+    const rows: UserRow[] = Object.entries(nameMap)
+      .map(([name, set]) => {
+        const dates = Array.from(set);
+        return { id: name, name, streak: calcStreak(dates), totalVisits: dates.length };
+      })
       .sort((a, b) => b.streak - a.streak || b.totalVisits - a.totalVisits);
     setUsers(rows);
   }
 
   async function fetchRatings() {
-    const { data } = await supabase.from('ratings').select('restaurant_name, rating');
+    // Fetch with user name; order by created_at desc so latest rating comes first
+    const { data } = await supabase
+      .from('ratings')
+      .select('restaurant_name, rating, users(name)')
+      .order('created_at', { ascending: false });
     if (!data) return;
+    // Deduplicate: same user name + same restaurant → count only the latest rating
+    const seen = new Set<string>();
     const map: Record<string, { up: number; down: number }> = {};
-    data.forEach((r) => {
+    for (const r of data as any[]) {
+      const userName: string = r.users?.name ?? 'anon';
+      const key = `${userName}::${r.restaurant_name}`;
+      if (seen.has(key)) continue;
+      seen.add(key);
       if (!map[r.restaurant_name]) map[r.restaurant_name] = { up: 0, down: 0 };
       if (r.rating === 'up') map[r.restaurant_name].up++;
       else map[r.restaurant_name].down++;
-    });
+    }
     const sorted = Object.entries(map)
       .map(([name, c]) => ({ name, ...c, score: c.up - c.down }))
       .sort((a, b) => b.score - a.score);

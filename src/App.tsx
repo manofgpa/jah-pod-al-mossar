@@ -551,7 +551,8 @@ export default function App() {
               className={`mode-switch__btn ${mode === 'lunch' && viewMode === 'main' ? 'mode-switch__btn--active' : ''}`}
               onClick={() => { setMode('lunch'); setViewMode('main'); }}
             >
-              Al-mossar
+              <span className="mode-switch__ico" aria-hidden>🍽️</span>
+              <span className="mode-switch__lbl">Al-mossar</span>
             </button>
             <button
               type="button"
@@ -560,7 +561,8 @@ export default function App() {
               className={`mode-switch__btn ${mode === 'drink' && viewMode === 'main' ? 'mode-switch__btn--active' : ''}`}
               onClick={() => { setMode('drink'); setViewMode('main'); }}
             >
-              Beber
+              <span className="mode-switch__ico" aria-hidden>🍺</span>
+              <span className="mode-switch__lbl">Beber</span>
             </button>
             <button
               type="button"
@@ -569,7 +571,8 @@ export default function App() {
               className={`mode-switch__btn ${viewMode === 'vote' ? 'mode-switch__btn--active' : ''}`}
               onClick={() => setViewMode('vote')}
             >
-              🗳️ Votar
+              <span className="mode-switch__ico" aria-hidden>🗳️</span>
+              <span className="mode-switch__lbl">Votar</span>
             </button>
           </div>
           <Link to="/leaderboard" className="lb-link" title="Leaderboard">🏆</Link>
@@ -636,9 +639,9 @@ export default function App() {
         ) : (
         <>
 
-        <h1 className="app__title">
-          {canGo ?  'JAH POD' : '🤔'}
-        </h1>
+        <p className="app__pre-title" aria-hidden>
+          {canGo ? 'JAH POD' : '🤔'}
+        </p>
 
         <div className={`app__hero ${canGo ? 'app__hero--success' : 'app__hero--failure'}`}>
           {canGo ? (
@@ -713,31 +716,33 @@ export default function App() {
               >
                 {visitedToday ? '✅ Registrado' : 'Fui hoje! 🍽️'}
               </button>
-              <button
-                type="button"
-                className={`rating-btn${todayRating === 'up' ? ' rating-btn--active' : ''}`}
-                onClick={() => handleRateToday('up')}
-                aria-label="Curtiu"
-              >
-                👍
-              </button>
-              <button
-                type="button"
-                className={`rating-btn${todayRating === 'down' ? ' rating-btn--active' : ''}`}
-                onClick={() => handleRateToday('down')}
-                aria-label="Não curtiu"
-              >
-                👎
-              </button>
-              <a
-                href={whatsappUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="whatsapp-btn"
-              >
-                {WA_ICON}
-                Compartilhar
-              </a>
+              <div className="game-actions__secondary">
+                <button
+                  type="button"
+                  className={`rating-btn${todayRating === 'up' ? ' rating-btn--active' : ''}`}
+                  onClick={() => handleRateToday('up')}
+                  aria-label="Curtiu"
+                >
+                  👍
+                </button>
+                <button
+                  type="button"
+                  className={`rating-btn${todayRating === 'down' ? ' rating-btn--active' : ''}`}
+                  onClick={() => handleRateToday('down')}
+                  aria-label="Não curtiu"
+                >
+                  👎
+                </button>
+                <a
+                  href={whatsappUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="whatsapp-btn"
+                >
+                  {WA_ICON}
+                  Compartilhar
+                </a>
+              </div>
             </div>
 
             <div className="map-embed">
