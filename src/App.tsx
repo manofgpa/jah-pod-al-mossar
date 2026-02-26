@@ -7,9 +7,50 @@ import './App.css';
 const SUCCESS_PHRASES = [
   'Bora comer que hoje tá liberado!',
   'Deus abençoou o seu estômago, pode ir!',
-  'O bandejão te chama, nobre guerreiro!',
-  'Hoje o almoço é destino, não opção!',
-  'Levanta dessa cadeira e vai almoçar, cidadão!',
+  'O bandejão te chama, nobre gordão!',
+  'Hoje o almoço é destino, não opção, OBESO!',
+  'Levanta dessa cadeira e vai almoçar, GORDÃO!',
+  'Vai. Antes que você comece a debugar a própria fome.',
+  'Pode almoçar. Seu cérebro já está rodando em versão beta.',
+  'A call acabou. Sobreviveu. Vá comer antes da próxima tragédia.',
+  'Se não for agora, você vai jantar às 16h. Vai.',
+  'Autocuidado é feature, não bug. Ativa o prato.',
+  'Seu estômago abriu 37 tickets. Resolva com comida.',
+  'Coma enquanto ainda lembra seu próprio nome.',
+  'Almoço liberado. O caos pode esperar 40 minutos.',
+  'Você não é um microserviço. Precisa de pausa.',
+  'Vai antes que você comece a achar que café é proteína.',
+  'Seu corpo não vive só de Wi-Fi e ansiedade.',
+  'É isso. Levanta. Anda. Mastiga. Respira.',
+  'Deploy deu certo. Agora faça deploy de arroz e feijão.',
+  'Hoje você escolhe: comer agora ou colapsar às 15h.',
+  'Sistema autorizou. A vida também. Vai.',
+  'Se continuar assim você vai tentar versionar o pão.',
+  'Vai nutrir essa máquina biológica toda bugada.',
+  'Comer agora é menos vergonhoso que surtar depois.',
+  'A única daily que importa: arroz, feijão e paz.',
+  'Vai antes que você comece a discutir com o Slack.',
+  'Vai comer antes que você tente compilar o arroz.',
+  'Seu estômago está fazendo DDoS na sua dignidade. Resolve isso.',
+  'Se você não almoçar agora, vai começar a morder o teclado.',
+  'O universo piscou três vezes. É o sinal. Vai.',
+  'Você já falou sozinho hoje. Merece comida.',
+  'Come antes que transforme a fome em planilha.',
+  'Seu corpo está rodando em modo avião há 6 horas.',
+  'Vai nutrir essa entidade biológica improvisada que você chama de “eu”.',
+  'Se continuar assim, você vai tentar versionar a sobremesa.',
+  'Comer agora evita que você peça desculpa pro micro-ondas depois.',
+  'Sua sombra acabou de sugerir arroz. Escute ela.',
+  'Você não é movido a ódio e Wi-Fi. Vai.',
+  'Se alimentar é mais fácil que explicar esse código.',
+  'Vai antes que você comece a ver pull request no prato.',
+  'Seu cérebro está usando 2% de bateria emocional.',
+  'A realidade já está bugada. Pelo menos mastiga.',
+  'Come. Pelo amor de tudo que ainda é minimamente sólido.',
+  'Você já abriu a geladeira 4 vezes. Só aceita.',
+  'Hoje o almoço é intervenção divina.',
+  'Se não for agora, você vai jantar no café da tarde.',
+  'EEEEEEEE moreirinhaaaaaaa!'
 ];
 
 const FAILURE_PHRASES = [
@@ -18,23 +59,278 @@ const FAILURE_PHRASES = [
   'Nem pensa, senta e trabalha!',
   'O relógio disse não. Respeite.',
   'Paciência, campeão. Ainda não é hora.',
+  'Ainda não. Você sabe que não.',
+  'Se você sair agora, o universo quebra.',
+  'Segura. O caos ainda não atingiu pico crítico.',
+  'Não. Você abriu essa aba há 3 minutos.',
+  'Respira. Isso é ansiedade, não fome.',
+  'Você quer almoço ou quer fugir da task?',
+  'Ainda não. Termina pelo menos UMA coisa.',
+  'Seu estômago tá dramático, mas o relógio venceu.',
+  'Calma. Não é fome, é tédio corporativo.',
+  'Se for agora vai voltar mais perdido do que saiu.',
+  'Você literalmente acabou de comer um pacote inteiro de bolacha.',
+  'Não romantiza. Espera mais um pouco.',
+  'O cronograma está rindo de você.',
+  'Se sair agora, vai virar almoço + crise existencial.',
+  'Negativo. O commit ainda não subiu.',
+  'Você só quer uma pausa da própria mente.',
+  'Ainda não é hora. É só hiperfoco quebrando.',
+  'Você tá tentando recompensar estresse com carboidrato.',
+  'Volta pra realidade. Depois você vai.',
+  'A fome é real. O timing é péssimo.',
+  'Ainda não. Você está confundindo vazio existencial com fome.',
+  'Negativo. Isso é procrastinação gourmet.',
+  'Seu estômago é dramático. O relógio é cruel.',
+  'Se sair agora, você não volta mais mentalmente.',
+  'Calma. Isso é só seu cérebro tentando fugir da realidade.',
+  'Você quer comida ou quer escapar da task?',
+  'Ainda não. Termina algo antes de terminar o arroz.',
+  'O caos ainda não atingiu estabilidade mínima.',
+  'Você acabou de prometer que ia focar.',
+  'Não romantiza. É só ansiedade com tempero.',
+  'Se você comer agora vai chamar de “almoço estratégico”.',
+  'Isso não é fome. É carência de serotonina.',
+  'Volta pro que você estava fazendo antes de questionar a própria existência.',
+  'Se alimentar não vai resolver essa arquitetura.',
+  'Ainda não. Aguenta firme, criatura caótica.',
+  'Você só quer andar até algum lugar para sentir que tem controle.',
+  'O universo disse “aguarde”. E ele nem usa relógio.',
+  'Negado. Seu cérebro está tentando negociar.',
+  'Se sair agora, vira almoço + crise + café.',
+  'Respira. Água primeiro. Depois a gente conversa.'
 ];
+
+const ORIGIN = 'Rua Maria Carolina, 624, Jardim Paulistano, São Paulo, SP';
 
 const RESTAURANTS = [
   {
     name: 'Gigio Trattoria',
     cuisine: 'Italiana',
     description: 'Cantina clássica desde 1995, massas caseiras, ambiente aconchegante.',
+    address: 'Rua dos Pinheiros, 355, Pinheiros, São Paulo, SP',
   },
   {
     name: 'Pirajá',
     cuisine: 'Bar Brasileiro',
     description: 'Botequim carioca em SP, petiscos estilosos, ótimo para almoço descontraído.',
+    address: 'Avenida Brigadeiro Faria Lima, 64, Pinheiros, São Paulo, SP',
   },
   {
     name: 'Fitó',
     cuisine: 'Nordestina Contemporânea',
     description: 'Culinária nordestina com toque moderno, ingredientes frescos.',
+    address: 'Rua Cardeal Arcoverde, 2773, Pinheiros, São Paulo, SP',
+  },
+  {
+    name: 'Consulado Mineiro',
+    cuisine: 'Brasileira (Mineira)',
+    description: 'Comida de vó feita com respeito, o melhor da culinária das fazendas de Minas Gerais.',
+    address: 'Praça Benedito Calixto, 74, Pinheiros, São Paulo, SP',
+  },
+  {
+    name: 'Metzi',
+    cuisine: 'Mexicana',
+    description: 'Um dos melhores mexicanos da América Latina, com receitas autênticas e toque brasileiro.',
+    address: 'Rua João Moura, 861, Pinheiros, São Paulo, SP',
+  },
+  {
+    name: 'Bosco Restaurante',
+    cuisine: 'Italiana',
+    description: 'Macarronada incrivelmente boa num casarão de 1940 que respira história e massas feitas com carinho.',
+    address: 'Rua João Moura, 976, Pinheiros, São Paulo, SP',
+  },
+  {
+    name: 'Diavola Pizzeria',
+    cuisine: 'Pizza',
+    description: 'Pizzas de tradição italiana com massa crocante, quentinhas e irresistíveis.',
+    address: 'Rua João Moura, 1080, Pinheiros, São Paulo, SP',
+  },
+  {
+    name: 'Suri Ceviche',
+    cuisine: 'Peruana',
+    description: 'Ceviche fresco e sensacional que te transporta direto pra Lima, com drinks latinos incríveis.',
+    address: 'Rua Costa Carvalho, 72, Pinheiros, São Paulo, SP',
+  },
+  {
+    name: 'Tasca do Zé e da Maria',
+    cuisine: 'Portuguesa',
+    description: 'Uma tasca charmosa com bacalhau à Brás e frutos do mar no mais puro estilo português.',
+    address: 'Rua dos Pinheiros, 434, Pinheiros, São Paulo, SP',
+  },
+  {
+    name: 'Low BBQ',
+    cuisine: 'Churrasco Americano',
+    description: 'Defumados no estilo Texas, carnes tão macias que derretem na boca sem pedir licença.',
+    address: 'Rua dos Pinheiros, 1235, Pinheiros, São Paulo, SP',
+  },
+  {
+    name: 'Nou Restaurante',
+    cuisine: 'Contemporânea',
+    description: 'Pratos descomplicados e sofisticados que misturam o melhor da cozinha italiana e brasileira.',
+    address: 'Rua dos Pinheiros, 274, Pinheiros, São Paulo, SP',
+  },
+  {
+    name: 'Piú Restaurante',
+    cuisine: 'Italiana',
+    description: 'Massas criativas com ingredientes brasileiros frescos, num ambiente solar e acolhedor.',
+    address: 'Rua Ferreira de Araújo, 314, Pinheiros, São Paulo, SP',
+  },
+  {
+    name: 'Purana.Co',
+    cuisine: 'Vegana',
+    description: '100% plant-based feito com amor, prova definitiva de que verdura também é sinônimo de gostoso.',
+    address: 'Rua Cônego Eugênio Leite, 840, Pinheiros, São Paulo, SP',
+  },
+  {
+    name: 'Shinju Teppan & Sushi',
+    cuisine: 'Japonesa',
+    description: 'Espaço sofisticado com edomae sushi fresco e teppan na vista, tudo preparado com maestria.',
+    address: 'Avenida Pedroso de Morais, 795, Pinheiros, São Paulo, SP',
+  },
+  {
+    name: 'Hamatyo',
+    cuisine: 'Japonesa',
+    description: 'Tiny spot com o melhor sushi escondido de SP, cada peixe tratado como ouro pelos chefs.',
+    address: 'Avenida Pedroso de Morais, 393, Pinheiros, São Paulo, SP',
+  },
+  {
+    name: 'Saj Restaurante Árabe',
+    cuisine: 'Árabe (Libanesa)',
+    description: 'Pão saj quentinho no prato quente, comida libanesa autêntica feita com tradição de família.',
+    address: 'Rua Girassol, 523, Vila Madalena, São Paulo, SP',
+  },
+  {
+    name: 'Banana Verde',
+    cuisine: 'Vegetariana',
+    description: 'Um dos melhores restaurantes vegetarianos do Brasil, provando que comer verde é absolutamente delicioso.',
+    address: 'Rua Harmonia, 278, Vila Madalena, São Paulo, SP',
+  },
+  {
+    name: 'Martín Fierro',
+    cuisine: 'Argentina',
+    description: 'Parrilla argentina com carnes impecáveis, empanadas e aquele charme portenho inconfundível.',
+    address: 'Rua Aspicuelta, 683, Vila Madalena, São Paulo, SP',
+  },
+  {
+    name: 'Cais Restaurante',
+    cuisine: 'Frutos do Mar',
+    description: 'Peixes e frutos do mar fresquíssimos num ambiente descontraído que remete ao litoral.',
+    address: 'Rua Fidalga, 314, Vila Madalena, São Paulo, SP',
+  },
+  {
+    name: 'Baião Cozinha Nordestina',
+    cuisine: 'Nordestina',
+    description: 'Baião de dois, carne de sol e tapioca que fazem a saudade do Nordeste bater forte na barriga.',
+    address: 'Rua Fradique Coutinho, 888, Vila Madalena, São Paulo, SP',
+  },
+  {
+    name: 'NB Steak Faria Lima',
+    cuisine: 'Churrascaria',
+    description: 'Rodízio clássico com cortes impecáveis servidos no melhor estilo, puro conforto carnívoro.',
+    address: 'Avenida Brigadeiro Faria Lima, 140, Pinheiros, São Paulo, SP',
+  },
+  {
+    name: 'Cozinha 212',
+    cuisine: 'Contemporânea',
+    description: 'Ingredientes orgânicos da horta própria num grill a lenha super aconchegante.',
+    address: 'Rua dos Pinheiros, 174, Pinheiros, São Paulo, SP',
+  },
+  {
+    name: 'GUA.CO',
+    cuisine: 'Mexicana',
+    description: 'Burritos, tacos e bowls coloridos com ingredientes frescos, fast-casual feito do jeito certo.',
+    address: 'Rua dos Pinheiros, 861, Pinheiros, São Paulo, SP',
+  },
+  {
+    "name": "Cantina Gigio",
+    "cuisine": "Italiana",
+    "description": "Cantina italiana clássica com massas e pratos tradicionais.",
+    "address": "Rua dos Pinheiros, 355, Pinheiros, São Paulo, SP"
+  },
+  {
+    "name": "Più Pinheiros",
+    "cuisine": "Italiana",
+    "description": "Restaurante italiano acolhedor com cozinha criativa.",
+    "address": "Rua Ferreira de Araújo, 314, Pinheiros, São Paulo, SP"
+  },
+  {
+    "name": "Modern Mamma Osteria (MoMa)",
+    "cuisine": "Italiana",
+    "description": "Osteria italiana moderna e refinada.",
+    "address": "Rua Ferreira de Araújo, 192, Pinheiros, São Paulo, SP"
+  },
+  {
+    "name": "La Nonna di Lucca",
+    "cuisine": "Italiana",
+    "description": "Culinária italiana tradicional com massa artesanal.",
+    "address": "Rua Ferreira de Araújo, 445, Pinheiros, São Paulo, SP"
+  },
+  {
+    "name": "Le Jazz Brasserie",
+    "cuisine": "Francesa",
+    "description": "Brasserie clássica com steak frites e pratos franceses.",
+    "address": "Rua dos Pinheiros, 254, Pinheiros, São Paulo, SP"
+  },
+  {
+    "name": "Aguzzo Cucina Italiana",
+    "cuisine": "Italiana",
+    "description": "Cozinha italiana contemporânea com foco em massas e risotos.",
+    "address": "Rua Simão Álvares, 325, Pinheiros, São Paulo, SP"
+  },
+  {
+    "name": "Nou Restaurante",
+    "cuisine": "Contemporânea",
+    "description": "Cozinha contemporânea com pratos autorais e ingredientes sazonais.",
+    "address": "Rua dos Pinheiros, 274, Pinheiros, São Paulo, SP"
+  },
+  {
+    "name": "Consulado da Bahia",
+    "cuisine": "Brasileira (Baiana)",
+    "description": "Culinária da Bahia com moquecas e pratos típicos.",
+    "address": "Rua dos Pinheiros, 534, Pinheiros, São Paulo, SP"
+  },
+  {
+    "name": "Fitó",
+    "cuisine": "Nordestina Contemporânea",
+    "description": "Culinária nordestina com toque moderno e ingredientes frescos.",
+    "address": "Rua Cardeal Arcoverde, 2773, Pinheiros, São Paulo, SP"
+  },
+  {
+    "name": "Incêndio Restaurante",
+    "cuisine": "Contemporânea",
+    "description": "Cozinha criativa com foco em grelha e ingredientes brasileiros.",
+    "address": "Rua dos Pinheiros, 808, Pinheiros, São Paulo, SP"
+  },
+  {
+    "name": "Rinconcito Peruano",
+    "cuisine": "Peruana",
+    "description": "Culinária peruana com ceviches e pratos tradicionais.",
+    "address": "Rua dos Pinheiros, 832, Pinheiros, São Paulo, SP"
+  },
+  {
+    "name": "Pato Rei",
+    "cuisine": "Chinesa",
+    "description": "Especialista em pato laqueado e clássicos da culinária chinesa.",
+    "address": "Rua dos Pinheiros, 471, Pinheiros, São Paulo, SP"
+  },
+  {
+    "name": "Komah",
+    "cuisine": "Coreana",
+    "description": "Cozinha coreana moderna com pratos autorais e sabores intensos.",
+    "address": "Rua Cônego Eugênio Leite, 1145, Pinheiros, São Paulo, SP"
+  },
+  {
+    "name": "Hira Ramen Izakaya",
+    "cuisine": "Japonesa",
+    "description": "Ramen artesanal com caldos intensos e clima de izakaya.",
+    "address": "Rua Fradique Coutinho, 1240, Pinheiros, São Paulo, SP"
+  },
+  {
+    "name": "Lanchonete da Cidade",
+    "cuisine": "Hambúrguer",
+    "description": "Hambúrguer artesanal premiado com ingredientes selecionados.",
+    "address": "Rua Coropés, 51, Pinheiros, São Paulo, SP"
   },
 ];
 
@@ -43,13 +339,21 @@ function pickRandom<T>(arr: T[]): T {
 }
 
 export default function App() {
-  const { canEat, formattedTime } = useClock();
+  const { canEat, formattedTime, currentTime } = useClock();
   const { width, height } = useWindowSize();
   const phrase = useMemo(
     () => pickRandom(canEat ? SUCCESS_PHRASES : FAILURE_PHRASES),
     [canEat],
   );
 
+  const dayIndex = useMemo(
+    () => Math.floor(currentTime.getTime() / 86_400_000) % RESTAURANTS.length,
+    [currentTime],
+  );
+  const restaurant = RESTAURANTS[dayIndex];
+  const mapsLink = `https://www.google.com/maps/dir/${encodeURIComponent(ORIGIN)}/${encodeURIComponent(restaurant.address)}&travelmode=walking`;
+  const mapsEmbedUrl = `https://maps.google.com/maps?saddr=${encodeURIComponent(ORIGIN)}&daddr=${encodeURIComponent(restaurant.address)}&output=embed`;
+  
   return (
     <div className={`app ${canEat ? 'app--success' : 'app--failure'}`}>
       {canEat && (
@@ -64,27 +368,46 @@ export default function App() {
       <div className="app__content">
         <p className="app__clock">{formattedTime}</p>
 
-        <h1 className="app__title">{canEat ? 'JAH POD!' : 'NON POD!'}</h1>
+        <h1 className="app__title">
+          {canEat ? 'JAH POD' : '🤔'}
+        </h1>
+
+        <h1 className="app__title">{canEat ? 'AL-MOSSAR! 🍽️' : 'NON POD!'}</h1>
 
         <p className="app__phrase">{phrase}</p>
 
-        <p className="app__window">
-          {canEat
-            ? 'Janela de almoço: 11:30 — 14:30'
-            : 'O almoço rola entre 11:30 e 14:30'}
-        </p>
-
         {canEat && (
           <section className="restaurants">
-            <h2 className="restaurants__title">Onde comer hoje? (Pinheiros)</h2>
-            <div className="restaurants__grid">
-              {RESTAURANTS.map((r) => (
-                <div key={r.name} className="restaurant-card">
-                  <h3 className="restaurant-card__name">{r.name}</h3>
-                  <span className="restaurant-card__cuisine">{r.cuisine}</span>
-                  <p className="restaurant-card__description">{r.description}</p>
-                </div>
-              ))}
+            <h2 className="restaurants__title">HOJE É DIA DE:</h2>
+
+            <div className="restaurant-card">
+              <div className="restaurant-card__header">
+                <h3 className="restaurant-card__name">{restaurant.name}</h3>
+                <span className="restaurant-card__cuisine">{restaurant.cuisine}</span>
+              </div>
+              <p className="restaurant-card__description">{restaurant.description}</p>
+              <p className="restaurant-card__address">{restaurant.address}</p>
+              <a
+                href={mapsLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="restaurant-card__link"
+              >
+                Abrir rota no Google Maps ↗
+              </a>
+            </div>
+
+            <div className="map-embed">
+              <iframe
+                src={mapsEmbedUrl}
+                title={`Rota até ${restaurant.name}`}
+                width="100%"
+                height="400"
+                style={{ border: 0 }}
+                allowFullScreen
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+              />
             </div>
           </section>
         )}

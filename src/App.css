@@ -1,42 +1,157 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
+/* ── Layout ─────────────────────────────────────────────── */
+.app {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.6s ease;
   padding: 2rem;
+  box-sizing: border-box;
+}
+
+.app--success {
+  background: #00c853;
+}
+
+.app--failure {
+  background: #d32f2f;
+}
+
+/* ── Content (above confetti canvas) ────────────────────── */
+.app__content {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  color: #fff;
   text-align: center;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+/* ── Clock ───────────────────────────────────────────────── */
+.app__clock {
+  font-size: 1.5rem;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.05em;
+  opacity: 0.9;
+  margin: 0;
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+/* ── Main title ──────────────────────────────────────────── */
+.app__title {
+  font-size: clamp(4rem, 15vw, 10rem);
+  font-weight: 900;
+  line-height: 1;
+  margin: 0;
+  text-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+/* ── Phrase ──────────────────────────────────────────────── */
+.app__phrase {
+  font-size: clamp(1rem, 3vw, 1.5rem);
+  font-style: italic;
+  max-width: 600px;
+  margin: 0;
+  opacity: 0.95;
 }
 
-.card {
-  padding: 2em;
+/* ── Time window ─────────────────────────────────────────── */
+.app__window {
+  font-size: 0.9rem;
+  opacity: 0.75;
+  margin: 0;
 }
 
-.read-the-docs {
-  color: #888;
+/* ── Restaurants ─────────────────────────────────────────── */
+.restaurants {
+  margin-top: 2rem;
+  width: 100%;
+  max-width: 800px;
+}
+
+.restaurants__title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin: 0 0 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  opacity: 0.9;
+}
+
+/* ── Restaurant card (glassmorphism) ─────────────────────── */
+.restaurant-card {
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 12px;
+  padding: 1.25rem;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.restaurant-card__header {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.restaurant-card__name {
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.restaurant-card__cuisine {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  opacity: 0.8;
+}
+
+.restaurant-card__description {
+  font-size: 0.875rem;
+  margin: 0;
+  opacity: 0.9;
+  line-height: 1.5;
+}
+
+.restaurant-card__address {
+  font-size: 0.8rem;
+  margin: 0;
+  opacity: 0.75;
+}
+
+.restaurant-card__link {
+  display: inline-block;
+  margin-top: 0.25rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #fff;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.restaurant-card__link:hover {
+  opacity: 0.8;
+}
+
+/* ── Map embed ───────────────────────────────────────────── */
+.map-embed {
+  margin-top: 1rem;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  width: 100%;
+}
+
+.map-embed iframe {
+  display: block;
+  width: 100%;
+  height: 400px;
 }
