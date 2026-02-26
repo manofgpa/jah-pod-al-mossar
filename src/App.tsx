@@ -4,7 +4,7 @@ import { useWindowSize } from 'react-use';
 import { useClock } from './hooks/useClock';
 import './App.css';
 
-const SUCCESS_PHRASES = [
+const NORMAL_PHRASES = [
   'Bora comer que hoje tá liberado!',
   'Deus abençoou o seu estômago, pode ir!',
   'O bandejão te chama, nobre gordão!',
@@ -53,25 +53,26 @@ const SUCCESS_PHRASES = [
   'EEEEEEEE moreirinhaaaaaaa!'
 ];
 
-const FAILURE_PHRASES = [
-  'Ainda não, segura essa fome aí!',
+/** Fora do horário — não pode ir, humor ácido */
+const OUTSIDE_PHRASES = [
+  'Ainda não, segura essa fome aí, gordão!',
   'Volta pro serviço, o almoço ainda não te quer.',
-  'Nem pensa, senta e trabalha!',
-  'O relógio disse não. Respeite.',
+  'Nem pensa, senta e trabalha, obeso!',
+  'O relógio disse não. Respeite, gordão.',
   'Paciência, campeão. Ainda não é hora.',
-  'Ainda não. Você sabe que não.',
+  'Ainda não. Você sabe que não, obeso.',
   'Se você sair agora, o universo quebra.',
   'Segura. O caos ainda não atingiu pico crítico.',
   'Não. Você abriu essa aba há 3 minutos.',
-  'Respira. Isso é ansiedade, não fome.',
+  'Respira. Isso é ansiedade, não fome, gordão.',
   'Você quer almoço ou quer fugir da task?',
   'Ainda não. Termina pelo menos UMA coisa.',
   'Seu estômago tá dramático, mas o relógio venceu.',
   'Calma. Não é fome, é tédio corporativo.',
   'Se for agora vai voltar mais perdido do que saiu.',
-  'Você literalmente acabou de comer um pacote inteiro de bolacha.',
+  'Você literalmente acabou de comer um pacote inteiro de bolacha, obeso.',
   'Não romantiza. Espera mais um pouco.',
-  'O cronograma está rindo de você.',
+  'O cronograma está rindo de você, gordão.',
   'Se sair agora, vai virar almoço + crise existencial.',
   'Negativo. O commit ainda não subiu.',
   'Você só quer uma pausa da própria mente.',
@@ -81,7 +82,7 @@ const FAILURE_PHRASES = [
   'A fome é real. O timing é péssimo.',
   'Ainda não. Você está confundindo vazio existencial com fome.',
   'Negativo. Isso é procrastinação gourmet.',
-  'Seu estômago é dramático. O relógio é cruel.',
+  'Seu estômago é dramático. O relógio é cruel, gordão.',
   'Se sair agora, você não volta mais mentalmente.',
   'Calma. Isso é só seu cérebro tentando fugir da realidade.',
   'Você quer comida ou quer escapar da task?',
@@ -89,17 +90,89 @@ const FAILURE_PHRASES = [
   'O caos ainda não atingiu estabilidade mínima.',
   'Você acabou de prometer que ia focar.',
   'Não romantiza. É só ansiedade com tempero.',
-  'Se você comer agora vai chamar de “almoço estratégico”.',
-  'Isso não é fome. É carência de serotonina.',
+  'Se você comer agora vai chamar de "almoço estratégico".',
+  'Isso não é fome. É carência de serotonina, obeso.',
   'Volta pro que você estava fazendo antes de questionar a própria existência.',
   'Se alimentar não vai resolver essa arquitetura.',
   'Ainda não. Aguenta firme, criatura caótica.',
   'Você só quer andar até algum lugar para sentir que tem controle.',
-  'O universo disse “aguarde”. E ele nem usa relógio.',
-  'Negado. Seu cérebro está tentando negociar.',
+  'O universo disse "aguarde". E ele nem usa relógio.',
+  'Negado. Seu cérebro está tentando negociar, gordão.',
   'Se sair agora, vira almoço + crise + café.',
-  'Respira. Água primeiro. Depois a gente conversa.'
+  'Respira. Água primeiro. Depois a gente conversa.',
+  'Segura essa barriga, são só 10h. O bandejão não abre pra obeso ansioso.',
+  'Obeso, o relógio não erra. Sentado.',
+  'Gordão, fora do horário é fora. Aceita.',
+  'Nem pensa em levantar. O almoço te rejeitou nessa hora, gordão.',
+  'Tá com fome? O relógio tá rindo de você, obeso.',
+  'Janela fechada. Sua ansiedade e seu estômago que se entendam, gordão.',
 ];
+
+/** Right before 11:30 — ansiedade e fome */
+const ANXIETY_PHRASES = [
+  'Ainda não, segura essa fome aí! Quase, gordão!',
+  'Quase lá, obeso! Mais uns minutinhos.',
+  'A ansiedade é real. Segura mais 20 min.',
+  'Seu estômago tá dramático, mas o relógio venceu por pouco.',
+  'Calma. Não é fome, é tédio corporativo. Quase 11:30.',
+  'Respira. Isso é ansiedade, não fome. Falta pouco!',
+  'Gordão, falta pouco! A hora tá chegando.',
+  'Obeso, controla a ansiedade. 11:30 já já.',
+  'Segura a onda, a janela abre em breve.',
+  'Seu estômago já está na fila. Aguenta, gordão.',
+  'Fome + ansiedade = aguenta mais 15 min, obeso.',
+  'O relógio disse "quase". Respeita, gordão.',
+  'Mais uns minutos e você pode atacar o bandejão.',
+  'A ansiedade de comer tá batendo. Segura até 11:30.',
+  'Quase, gordão! O bandejão te chama em breve.',
+  'Seu estômago abriu os tickets. Em 10 min você resolve.',
+  'Não é hora ainda. Mas é a hora de se preparar, obeso.',
+  'Aguenta firme. A janela já está abrindo, gordão.',
+];
+
+/** 11:30–12:00 — acabou de abrir */
+const JUST_STARTED_PHRASES = [
+  'Bora comer que hoje tá liberado!',
+  'Acabou de abrir! Bora que bora.',
+  'Janela aberta! Primeira leva, vai.',
+  'Deus abençoou o seu estômago, pode ir!',
+  'O bandejão te chama, nobre gordão!',
+  'Abriu! Levanta e vai, antes que encha.',
+  'É agora! O almoço te espera.',
+  'Saiu o sinal. Vai comer, gordão!',
+  'Hoje o almoço é destino, não opção. Bora!',
+  'Levanta dessa cadeira e vai almoçar, GORDÃO!',
+  'Primeira chamada! Quem não vai fica com fome.',
+  'Janela aberta. Vai antes que a fila vire caos.',
+  'Liberado! O bandejão já tá te esperando, obeso.',
+];
+
+/** 13:30–14:30 — muito atrasado, corre */
+const LATE_PHRASES = [
+  'Tá muito atrasado! Corre que ainda dá, gordão!',
+  'Última chamada, obeso! Vai agora ou fica sem.',
+  'Fechando em breve! Acelera, gordão.',
+  'Corre! A janela tá fechando.',
+  'É agora ou nunca. Levanta e vai, obeso!',
+  'Se não for agora, você vai jantar às 16h. Vai.',
+  'Hoje você escolhe: comer agora ou colapsar às 15h.',
+  'Última hora! O bandejão não espera, gordão.',
+  'Corre, obeso! Em 1h fecha e você fica no choro.',
+  'Acelera. A janela tá fechando e sua barriga não perdoa.',
+  'Última chamada. O relógio não tem pena de gordão.',
+  'Vai agora ou passa fome até o jantar. Sério.',
+  'Fechando! Seu estômago já tá te xingando, obeso.',
+  'Corre, gordão! Antes que vire "almoço às 16h".',
+  'A janela tá fechando. Sua última chance, obeso.',
+];
+
+const PHRASE_BY_PHASE: Record<number, readonly string[]> = {
+  0: OUTSIDE_PHRASES,
+  1: ANXIETY_PHRASES,
+  2: JUST_STARTED_PHRASES,
+  3: NORMAL_PHRASES,
+  4: LATE_PHRASES,
+};
 
 const ORIGIN = 'Rua Maria Carolina, 624, Jardim Paulistano, São Paulo, SP';
 
@@ -339,11 +412,11 @@ function pickRandom<T>(arr: T[]): T {
 }
 
 export default function App() {
-  const { canEat, formattedTime, currentTime } = useClock();
+  const { canEat, formattedTime, currentTime, lunchPhase } = useClock();
   const { width, height } = useWindowSize();
   const phrase = useMemo(
-    () => pickRandom(canEat ? SUCCESS_PHRASES : FAILURE_PHRASES),
-    [canEat],
+    () => pickRandom(PHRASE_BY_PHASE[lunchPhase] as string[]),
+    [lunchPhase],
   );
 
   const dayIndex = useMemo(
