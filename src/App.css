@@ -96,6 +96,44 @@
   text-align: center;
 }
 
+/* ── Mode switch (Almoço / Drink) ───────────────────────── */
+.mode-switch {
+  display: flex;
+  background: rgba(255, 255, 255, 0.25);
+  border-radius: 999px;
+  padding: 4px;
+  gap: 0;
+  margin-bottom: 0.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+}
+
+.mode-switch__btn {
+  padding: 0.5rem 1.25rem;
+  border: none;
+  border-radius: 999px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.85);
+  background: transparent;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.mode-switch__btn:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.mode-switch__btn--active {
+  background: #fff;
+  color: #222;
+}
+
+.mode-switch__btn--active:hover {
+  background: #fff;
+  color: #222;
+}
+
 /* ── Clock ───────────────────────────────────────────────── */
 .app__clock {
   font-size: 1.5rem;

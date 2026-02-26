@@ -1,38 +1,44 @@
 import { useState, useEffect } from 'react';
 
-/** 0 = outside hours, 1 = anxiety (right before 11:30), 2 = just started (11:30–12:00), 3 = normal (12:00–13:30), 4 = late (13:30–14:30) */
-export type LunchPhase = 0 | 1 | 2 | 3 | 4;
+export type AppMode = 'lunch' | 'drink';
 
-interface ClockState {
-  currentTime: Date;
-  canEat: boolean;
-  lunchPhase: LunchPhase;
-  formattedTime: string;
-}
+/** 0 = outside, 1 = anxiety (right before), 2 = just started, 3 = normal, 4 = late */
+export type WindowPhase = 0 | 1 | 2 | 3 | 4;
 
-function getLunchPhase(date: Date): LunchPhase {
+const LUNCH = {
+  beforeAnxiety: 11 * 60,
+  start: 11 * 60 + 30,
+  normalStart: 12 * 60,
+  lateStart: 13 * 60 + 30,
+  end: 14 * 60 + 30,
+};
+
+const DRINK = {
+  beforeAnxiety: 17 * 60 + 30,
+  start: 18 * 60,
+  normalStart: 18 * 60 + 30,
+  lateStart: 22 * 60,
+  end: 23 * 60,
+};
+
+function getPhase(date: Date, mode: AppMode): WindowPhase {
   const totalMinutes = date.getHours() * 60 + date.getMinutes();
-  const beforeAnxiety = 11 * 60; // 11:00
-  const start = 11 * 60 + 30; // 11:30
-  const noon = 12 * 60; // 12:00
-  const lateStart = 13 * 60 + 30; // 13:30
-  const end = 14 * 60 + 30; // 14:30
+  const w = mode === 'lunch' ? LUNCH : DRINK;
 
-  if (totalMinutes < beforeAnxiety || totalMinutes >= end) return 0;
-  if (totalMinutes < start) return 1;
-  if (totalMinutes < noon) return 2;
-  if (totalMinutes < lateStart) return 3;
+  if (totalMinutes < w.beforeAnxiety || totalMinutes >= w.end) return 0;
+  if (totalMinutes < w.start) return 1;
+  if (totalMinutes < w.normalStart) return 2;
+  if (totalMinutes < w.lateStart) return 3;
   return 4;
 }
 
-function isLunchTime(date: Date): boolean {
+function isWithinWindow(date: Date, mode: AppMode): boolean {
   const totalMinutes = date.getHours() * 60 + date.getMinutes();
-  const start = 11 * 60 + 30;
-  const end = 14 * 60 + 30;
-  return totalMinutes >= start && totalMinutes < end;
+  const w = mode === 'lunch' ? LUNCH : DRINK;
+  return totalMinutes >= w.start && totalMinutes < w.end;
 }
 
-export function useClock(): ClockState {
+export function useClock(mode: AppMode) {
   const [currentTime, setCurrentTime] = useState<Date>(new Date());
 
   useEffect(() => {
@@ -42,8 +48,8 @@ export function useClock(): ClockState {
     return () => clearInterval(id);
   }, []);
 
-  const canEat = isLunchTime(currentTime);
-  const lunchPhase = getLunchPhase(currentTime);
+  const canGo = isWithinWindow(currentTime, mode);
+  const phase = getPhase(currentTime, mode);
 
   const formattedTime = currentTime.toLocaleTimeString('pt-BR', {
     hour: '2-digit',
@@ -51,5 +57,9 @@ export function useClock(): ClockState {
     second: '2-digit',
   });
 
-  return { currentTime, canEat, lunchPhase, formattedTime };
+  return { currentTime, canGo, phase, formattedTime };
 }
+
+/** For backwards compatibility and labels */
+export const LUNCH_WINDOW = LUNCH;
+export const DRINK_WINDOW = DRINK;

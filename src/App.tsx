@@ -1,7 +1,7 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import Confetti from 'react-confetti';
 import { useWindowSize } from 'react-use';
-import { useClock } from './hooks/useClock';
+import { useClock, type AppMode } from './hooks/useClock';
 import './App.css';
 
 const NORMAL_PHRASES = [
@@ -53,7 +53,6 @@ const NORMAL_PHRASES = [
   'EEEEEEEE moreirinhaaaaaaa!'
 ];
 
-/** Fora do horário — não pode ir, humor ácido */
 const OUTSIDE_PHRASES = [
   'Ainda não, segura essa fome aí, gordão!',
   'Volta pro serviço, o almoço ainda não te quer.',
@@ -108,7 +107,6 @@ const OUTSIDE_PHRASES = [
   'Janela fechada. Sua ansiedade e seu estômago que se entendam, gordão.',
 ];
 
-/** Right before 11:30 — ansiedade e fome */
 const ANXIETY_PHRASES = [
   'Ainda não, segura essa fome aí! Quase, gordão!',
   'Quase lá, obeso! Mais uns minutinhos.',
@@ -130,7 +128,6 @@ const ANXIETY_PHRASES = [
   'Aguenta firme. A janela já está abrindo, gordão.',
 ];
 
-/** 11:30–12:00 — acabou de abrir */
 const JUST_STARTED_PHRASES = [
   'Bora comer que hoje tá liberado!',
   'Acabou de abrir! Bora que bora.',
@@ -147,7 +144,6 @@ const JUST_STARTED_PHRASES = [
   'Liberado! O bandejão já tá te esperando, obeso.',
 ];
 
-/** 13:30–14:30 — muito atrasado, corre */
 const LATE_PHRASES = [
   'Tá muito atrasado! Corre que ainda dá, gordão!',
   'Última chamada, obeso! Vai agora ou fica sem.',
@@ -172,6 +168,92 @@ const PHRASE_BY_PHASE: Record<number, readonly string[]> = {
   2: JUST_STARTED_PHRASES,
   3: NORMAL_PHRASES,
   4: LATE_PHRASES,
+};
+
+const OUTSIDE_DRINK = [
+  'Ainda não, segura a sede. Trabalho primeiro.',
+  'O relógio disse não. Respeite, bar ainda fechado.',
+  'Volta pro código. Happy hour começa às 18h.',
+  'Nem pensa. Sentado e trabalhando.',
+  'Paciência. Ainda não é hora do drink.',
+  'Se sair agora, o universo quebra. Espera às 18h.',
+  'Segura. O bar não abriu pra você ainda.',
+  'Respira. Isso é ansiedade, não sede de cerveja.',
+  'Você quer drink ou quer fugir da task?',
+  'Ainda não. Termina pelo menos UMA coisa.',
+  'O cronograma está rindo de você. 18h, não antes.',
+  'Negativo. O commit ainda não subiu.',
+  'Calma. Espera o happy hour de verdade.',
+  'Ainda não é hora. É só estresse acumulado.',
+  'Você só quer uma desculpa pra sair. Espera.',
+  'O bar te rejeitou nessa hora. Respeita.',
+  'Janela fechada. Drink rola das 18h às 23h.',
+  'Fora do horário é fora. Aceita.',
+];
+
+const ANXIETY_DRINK = [
+  'Quase lá! Mais uns minutinhos pro happy hour.',
+  'A sede de cerveja é real. Segura até 18h.',
+  'O relógio disse quase. Respeita.',
+  'Falta pouco! A janela abre em breve.',
+  'Segura a onda, o bar já já abre.',
+  'Mais uns minutos e você pode atacar o chopp.',
+  'Quase! O primeiro gole te espera.',
+  'Aguenta firme. 18h já está abrindo.',
+  'Seu cérebro já está escolhendo a cerveja. Falta pouco.',
+];
+
+const JUST_STARTED_DRINK = [
+  'Bora! Happy hour liberado!',
+  'Acabou de abrir! Primeira rodada, vai.',
+  'Janela aberta! O primeiro drink te chama.',
+  'É agora! O bar te espera.',
+  'Saiu o sinal. Vai beber!',
+  'Levanta dessa cadeira e vai pro bar!',
+  'Primeira chamada! Quem não vai fica com sede.',
+  'Liberado! O chopp já tá te esperando.',
+];
+
+const NORMAL_DRINK = [
+  'Bora tomar umas que hoje tá liberado!',
+  'Deus abençoou o happy hour, pode ir!',
+  'O bar te chama. Vai antes que acabe a promo.',
+  'Hoje o drink é destino, não opção!',
+  'Vai. Antes que você comece a debugar sobrio.',
+  'Pode ir. Seu cérebro já merece um off.',
+  'A call acabou. Sobreviveu. Vá tomar uma.',
+  'Se não for agora, você vai beber às 22h com pressa.',
+  'Autocuidado é feature. Ativa o chopp.',
+  'Você não é um microserviço. Precisa de um drink.',
+  'O universo piscou. É o sinal. Vai pro bar.',
+  'Deploy deu certo. Agora faz deploy de cerveja.',
+  'É isso. Levanta. Anda. Bebe. Respira.',
+  'Sistema autorizou. A vida também. Vai.',
+  'Vá antes que você comece a discutir com o Slack.',
+  'Seu corpo não vive só de café e ansiedade.',
+  'Happy hour liberado. O caos pode esperar.',
+  'Vá nutrir essa máquina que merece um drink.',
+];
+
+const LATE_DRINK = [
+  'Tá muito atrasado! Corre que ainda dá!',
+  'Última chamada! Vai agora ou fica sem.',
+  'Fechando em breve! Acelera.',
+  'Corre! O bar tá fechando.',
+  'É agora ou nunca. Levanta e vai!',
+  'Última hora! O bar não espera.',
+  'Corre! Em 1h fecha e você fica no choro.',
+  'Acelera. A janela tá fechando.',
+  'Última chamada. Vai agora ou passa sede.',
+  'A janela tá fechando. Sua última chance.',
+];
+
+const PHRASE_BY_PHASE_DRINK: Record<number, readonly string[]> = {
+  0: OUTSIDE_DRINK,
+  1: ANXIETY_DRINK,
+  2: JUST_STARTED_DRINK,
+  3: NORMAL_DRINK,
+  4: LATE_DRINK,
 };
 
 const ORIGIN = 'Rua Maria Carolina, 624, Jardim Paulistano, São Paulo, SP';
@@ -413,6 +495,17 @@ const RESTAURANTS = [
   },
 ];
 
+const BARS = [
+  { name: 'Pirajá', description: 'Botequim carioca em SP, petiscos e chopp.', address: 'Avenida Brigadeiro Faria Lima, 64, Pinheiros, São Paulo, SP' },
+  { name: 'Bar do Zé', description: 'Bar clássico de Pinheiros, ambiente descontraído.', address: 'Rua dos Pinheiros, 466, Pinheiros, São Paulo, SP' },
+  { name: 'Empório Alto dos Pinheiros', description: 'Drinks e petiscos num empório charmoso.', address: 'Rua Cardeal Arcoverde, 2895, Pinheiros, São Paulo, SP' },
+  { name: 'Tasca do Zé e da Maria', description: 'Tasca portuguesa com vinhos e petiscos.', address: 'Rua dos Pinheiros, 434, Pinheiros, São Paulo, SP' },
+  { name: 'Bar Léo', description: 'Bar tradicional com chopp gelado e ambiente animado.', address: 'Rua dos Pinheiros, 746, Pinheiros, São Paulo, SP' },
+  { name: 'Cervejaria Nacional', description: 'Cervejas artesanais e petiscos.', address: 'Rua dos Pinheiros, 898, Pinheiros, São Paulo, SP' },
+  { name: 'Bar da Dona Onça', description: 'Bar com vista e drinks especiais.', address: 'Avenida Pedroso de Morais, 1938, Pinheiros, São Paulo, SP' },
+  { name: 'Boteco do Alemão', description: 'Boteco com chopp e ambiente descolado.', address: 'Rua Teodoro Sampaio, 2092, Pinheiros, São Paulo, SP' },
+];
+
 function pickRandom<T>(arr: T[]): T {
   return arr[Math.floor(Math.random() * arr.length)];
 }
@@ -443,34 +536,36 @@ function useFoodFloats(canEat: boolean) {
 }
 
 export default function App() {
-  const { canEat, formattedTime, currentTime, lunchPhase } = useClock();
+  const [mode, setMode] = useState<AppMode>('lunch');
+  const { canGo, formattedTime, currentTime, phase } = useClock(mode);
   const { width, height } = useWindowSize();
   const phrase = useMemo(
-    () => pickRandom(PHRASE_BY_PHASE[lunchPhase] as string[]),
-    [lunchPhase],
+    () => pickRandom((mode === 'lunch' ? PHRASE_BY_PHASE : PHRASE_BY_PHASE_DRINK)[phase] as string[]),
+    [mode, phase],
   );
 
   const dayIndex = useMemo(
-    () => Math.floor(currentTime.getTime() / 86_400_000) % RESTAURANTS.length,
-    [currentTime],
+    () => Math.floor(currentTime.getTime() / 86_400_000) % (mode === 'lunch' ? RESTAURANTS.length : BARS.length),
+    [currentTime, mode],
   );
-  const restaurant = RESTAURANTS[dayIndex];
-  const mapsLink = `https://www.google.com/maps/dir/${encodeURIComponent(ORIGIN)}/${encodeURIComponent(restaurant.address)}&travelmode=walking`;
-  const mapsEmbedUrl = `https://maps.google.com/maps?saddr=${encodeURIComponent(ORIGIN)}&daddr=${encodeURIComponent(restaurant.address)}&output=embed`;
+  const restaurant = RESTAURANTS[dayIndex % RESTAURANTS.length];
+  const bar = BARS[dayIndex % BARS.length];
+  const mapsLink = `https://www.google.com/maps/dir/${encodeURIComponent(ORIGIN)}/${encodeURIComponent(mode === 'lunch' ? restaurant.address : bar.address)}&travelmode=walking`;
+  const mapsEmbedUrl = `https://maps.google.com/maps?saddr=${encodeURIComponent(ORIGIN)}&daddr=${encodeURIComponent(mode === 'lunch' ? restaurant.address : bar.address)}&output=embed`;
 
-  const foodFloats = useFoodFloats(canEat);
+  const foodFloats = useFoodFloats(canGo);
 
   return (
-    <div className={`app ${canEat ? 'app--success' : 'app--failure'}`}>
-      {!canEat && (
+    <div className={`app ${canGo ? 'app--success' : 'app--failure'}`}>
+      {!canGo && (
       <div className="food-layer" aria-hidden>
         {foodFloats.map((f) => (
           <span
             key={f.id}
-            className={`food-float food-float--${canEat ? 'celebrate' : 'sarcastic'}`}
+            className={`food-float food-float--${canGo ? 'celebrate' : 'sarcastic'}`}
             style={{
               left: `${f.left}%`,
-              ...(canEat ? { top: `${f.top}%` } : {}),
+              ...(canGo ? { top: `${f.top}%` } : {}),
               animationDelay: `${f.delay}s`,
               animationDuration: `${f.duration}s`,
               fontSize: `${f.size}rem`,
@@ -483,7 +578,7 @@ export default function App() {
       </div>
       )}
 
-      {canEat && (
+      {canGo && (
         <Confetti
           width={width}
           height={height}
@@ -493,41 +588,84 @@ export default function App() {
       )}
 
       <div className="app__content">
+        <div className="mode-switch">
+          <button
+            type="button"
+            className={`mode-switch__btn ${mode === 'lunch' ? 'mode-switch__btn--active' : ''}`}
+            onClick={() => setMode('lunch')}
+            aria-pressed={mode === 'lunch'}
+          >
+            Almoço
+          </button>
+          <button
+            type="button"
+            className={`mode-switch__btn ${mode === 'drink' ? 'mode-switch__btn--active' : ''}`}
+            onClick={() => setMode('drink')}
+            aria-pressed={mode === 'drink'}
+          >
+            Drink
+          </button>
+        </div>
+
         <p className="app__clock">{formattedTime}</p>
 
         <h1 className="app__title">
-          {canEat ? 'JÁH POD' : '🤔'}
+          {canGo ? (mode === 'lunch' ? 'JAH POD' : 'JAH BEBER') : '🤔'}
         </h1>
 
-        <h1 className="app__title">{canEat ? 'AL-MOSSAR! 🍽️' : 'NON POD!'}</h1>
+        <h1 className="app__title">
+          {canGo
+            ? (mode === 'lunch' ? 'AL-MOSSAR! 🍽️' : 'JAH BEBER! 🍺')
+            : (mode === 'lunch' ? 'NON POD ALMOSSAR!' : 'NON POD BEBER!')}
+        </h1>
 
         <p className="app__phrase">{phrase}</p>
 
-        {canEat && (
+        {canGo && (
           <section className="restaurants">
-            <h2 className="restaurants__title">HOJE É DIA DE:</h2>
+            <h2 className="restaurants__title">
+              {mode === 'lunch' ? 'HOJE É DIA DE:' : 'ONDE BEBER HOJE?'}
+            </h2>
 
-            <div className="restaurant-card">
-              <div className="restaurant-card__header">
-                <h3 className="restaurant-card__name">{restaurant.name}</h3>
-                <span className="restaurant-card__cuisine">{restaurant.cuisine}</span>
+            {mode === 'lunch' ? (
+              <div className="restaurant-card">
+                <div className="restaurant-card__header">
+                  <h3 className="restaurant-card__name">{restaurant.name}</h3>
+                  <span className="restaurant-card__cuisine">{restaurant.cuisine}</span>
+                </div>
+                <p className="restaurant-card__description">{restaurant.description}</p>
+                <p className="restaurant-card__address">{restaurant.address}</p>
+                <a
+                  href={mapsLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="restaurant-card__link"
+                >
+                  Abrir rota no Google Maps ↗
+                </a>
               </div>
-              <p className="restaurant-card__description">{restaurant.description}</p>
-              <p className="restaurant-card__address">{restaurant.address}</p>
-              <a
-                href={mapsLink}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="restaurant-card__link"
-              >
-                Abrir rota no Google Maps ↗
-              </a>
-            </div>
+            ) : (
+              <div className="restaurant-card">
+                <div className="restaurant-card__header">
+                  <h3 className="restaurant-card__name">{bar.name}</h3>
+                </div>
+                <p className="restaurant-card__description">{bar.description}</p>
+                <p className="restaurant-card__address">{bar.address}</p>
+                <a
+                  href={mapsLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="restaurant-card__link"
+                >
+                  Abrir rota no Google Maps ↗
+                </a>
+              </div>
+            )}
 
             <div className="map-embed">
               <iframe
                 src={mapsEmbedUrl}
-                title={`Rota até ${restaurant.name}`}
+                title={mode === 'lunch' ? `Rota até ${restaurant.name}` : `Rota até ${bar.name}`}
                 width="100%"
                 height="400"
                 style={{ border: 0 }}
