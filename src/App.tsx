@@ -655,7 +655,7 @@ export default function App() {
             <h1 className="app__title app__title--big app__title--two-lines">
               <span className="app__title-line">NON POD</span>
               <span className="app__title-line">
-                {mode === 'lunch' ? 'ALMOSSAR!' : 'BEBER!'}
+                {mode === 'lunch' ? 'AL-MOSSAR!' : 'BEBER!'}
               </span>
             </h1>
           )}
