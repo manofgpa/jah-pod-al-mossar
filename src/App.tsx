@@ -516,6 +516,26 @@ function pickRandom<T>(arr: T[]): T {
   return arr[Math.floor(Math.random() * arr.length)];
 }
 
+function createSeededRng(seed: number): () => number {
+  return function next() {
+    seed |= 0;
+    seed = (seed + 0x6d2b79f5) | 0; // 32-bit
+    let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+function getSuggestionIndicesForDate(date: Date): { lunch: number; drink: number } {
+  const yyyyMmDd = date.toISOString().slice(0, 10);
+  const numericSeed = [...yyyyMmDd].reduce((acc, c) => acc * 31 + c.charCodeAt(0), 0);
+  const rng = createSeededRng(numericSeed);
+  return {
+    lunch: Math.floor(rng() * RESTAURANTS.length),
+    drink: Math.floor(rng() * BARS.length),
+  };
+}
+
 const FOOD_EMOJIS = ['🍕', '🍔', '🍟', '🌮', '🍣', '🥪', '🍝', '🥗', '🍩', '🍪', '🧁', '🍰', '🥐', '🍳', '🌯', '🍜', '🥟', '🍤', '🍗', '🥓', '🍽️', '☕', '🥤', '🍿'];
 
 const DRINK_EMOJIS = ['🍺', '🍷', '🥃', '🍸', '🍹', '🍻', '🥂', '🧃', '🧋', '🥤', '🍾', '🍶', '🧉', '🍵', '☕', '🧊', '🥃', '🍺', '🍷', '🍸', '🍹', '🍻', '🥂', '🧃'];
@@ -553,10 +573,11 @@ export default function App() {
     [mode, phase],
   );
 
-  const [suggestionIndices] = useState(() => ({
-    lunch: Math.floor(Math.random() * RESTAURANTS.length),
-    drink: Math.floor(Math.random() * BARS.length),
-  }));
+  const todayUtc = new Date().toISOString().slice(0, 10);
+  const suggestionIndices = useMemo(
+    () => getSuggestionIndicesForDate(new Date()),
+    [todayUtc],
+  );
   const restaurant = RESTAURANTS[suggestionIndices.lunch];
   const bar = BARS[suggestionIndices.drink];
   const mapsLink = `https://www.google.com/maps/dir/${encodeURIComponent(ORIGIN)}/${encodeURIComponent(mode === 'lunch' ? restaurant.address : bar.address)}&travelmode=walking`;
@@ -566,26 +587,29 @@ export default function App() {
 
   return (
     <div className={`app ${canGo ? 'app--success' : 'app--failure'}`}>
-      <div className="mode-switch" role="tablist" aria-label="Modo almoço ou beber">
-        <button
-          type="button"
-          role="tab"
-          aria-selected={mode === 'lunch'}
-          className={`mode-switch__btn ${mode === 'lunch' ? 'mode-switch__btn--active' : ''}`}
-          onClick={() => setMode('lunch')}
-        >
-          Almossar
-        </button>
-        <button
-          type="button"
-          role="tab"
-          aria-selected={mode === 'drink'}
-          className={`mode-switch__btn ${mode === 'drink' ? 'mode-switch__btn--active' : ''}`}
-          onClick={() => setMode('drink')}
-        >
-          Beber
-        </button>
-      </div>
+      <header className="app__top-bar">
+        <p className="app__clock" aria-live="polite">{formattedTime}</p>
+        <div className="mode-switch" role="tablist" aria-label="Modo almoço ou beber">
+          <button
+            type="button"
+            role="tab"
+            aria-selected={mode === 'lunch'}
+            className={`mode-switch__btn ${mode === 'lunch' ? 'mode-switch__btn--active' : ''}`}
+            onClick={() => setMode('lunch')}
+          >
+            Almossar
+          </button>
+          <button
+            type="button"
+            role="tab"
+            aria-selected={mode === 'drink'}
+            className={`mode-switch__btn ${mode === 'drink' ? 'mode-switch__btn--active' : ''}`}
+            onClick={() => setMode('drink')}
+          >
+            Beber
+          </button>
+        </div>
+      </header>
 
       {!canGo && (
       <div className="food-layer" aria-hidden>
@@ -618,8 +642,6 @@ export default function App() {
       )}
 
       <div className="app__content">
-        <p className="app__clock">{formattedTime}</p>
-
         <h1 className="app__title">
           {canGo ?  'JAH POD' : '🤔'}
         </h1>

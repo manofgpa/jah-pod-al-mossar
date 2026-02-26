@@ -94,16 +94,45 @@
   gap: 1rem;
   color: #fff;
   text-align: center;
-  padding-top: 4rem;
+  padding-top: 7rem;
 }
 
-/* ── Mode switch (Almoço / Drink) — fixo no topo ─────────── */
-.mode-switch {
+/* ── Top bar fixa (relógio + switch) ─────────────────────── */
+.app__top-bar {
   position: fixed;
-  top: 5rem;
-  left: 50%;
-  transform: translateX(-50%);
+  top: 0;
+  left: 0;
+  right: 0;
   z-index: 20;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 1rem;
+  min-height: 6rem;
+  box-sizing: border-box;
+  color: #fff;
+}
+
+.app__top-bar .app__clock {
+  margin: 0;
+  font-size: 1.25rem;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.08em;
+  opacity: 0.95;
+  text-align: center;
+  color: #fff;
+}
+
+@media (min-width: 480px) {
+  .app__top-bar .app__clock {
+    font-size: 1.4rem;
+  }
+}
+
+/* ── Mode switch (dentro da top bar) ─────────────────────── */
+.mode-switch {
   display: flex;
   background: rgba(255, 255, 255, 0.25);
   border-radius: 999px;
@@ -118,7 +147,7 @@
   border-radius: 999px;
   font-size: 1.2rem;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.85);
+  color: #fff;
   background: transparent;
   cursor: pointer;
   transition: background 0.2s ease, color 0.2s ease;
@@ -226,6 +255,7 @@
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+  color: #fff;
 }
 
 .restaurant-card__header {
