@@ -496,7 +496,7 @@ export default function App() {
         <p className="app__clock">{formattedTime}</p>
 
         <h1 className="app__title">
-          {canEat ? 'JAH POD' : '🤔'}
+          {canEat ? 'JÁH POD' : '🤔'}
         </h1>
 
         <h1 className="app__title">{canEat ? 'AL-MOSSAR! 🍽️' : 'NON POD!'}</h1>
