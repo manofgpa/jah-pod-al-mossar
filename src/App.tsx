@@ -618,11 +618,20 @@ export default function App() {
           {canGo ? (mode === 'lunch' ? 'JAH POD' : 'JAH BEBER') : '🤔'}
         </h1>
 
-        <h1 className="app__title">
-          {canGo
-            ? (mode === 'lunch' ? 'AL-MOSSAR! 🍽️' : 'JAH BEBER! 🍺')
-            : (mode === 'lunch' ? 'NON POD ALMOSSAR!' : 'NON POD BEBER!')}
-        </h1>
+        <div className={`app__hero ${canGo ? 'app__hero--success' : 'app__hero--failure'}`}>
+          {canGo ? (
+            <h1 className="app__title app__title--big">
+              {mode === 'lunch' ? 'AL-MOSSAR! 🍽️' : 'BEBER! 🍺'}
+            </h1>
+          ) : (
+            <h1 className="app__title app__title--big app__title--two-lines">
+              <span className="app__title-line">NON POD</span>
+              <span className="app__title-line">
+                {mode === 'lunch' ? 'ALMOSSAR!' : 'BEBER!'}
+              </span>
+            </h1>
+          )}
+        </div>
 
         <p className="app__phrase">{phrase}</p>
 
