@@ -405,6 +405,12 @@ const RESTAURANTS = [
     "description": "Hambúrguer artesanal premiado com ingredientes selecionados.",
     "address": "Rua Coropés, 51, Pinheiros, São Paulo, SP"
   },
+  {
+    "name": "QUÈBEC",
+    "cuisine": "Canadense",
+    "description": "Restaurante canadense com comida rápida e consistente.",
+    "address": "Rua dos Pinheiros, 1183 - Pinheiros, São Paulo - SP, 05422-012"
+  },
 ];
 
 function pickRandom<T>(arr: T[]): T {
@@ -412,7 +418,8 @@ function pickRandom<T>(arr: T[]): T {
 }
 
 export default function App() {
-  const { canEat, formattedTime, currentTime, lunchPhase } = useClock();
+  const { canEats, formattedTime, currentTime, lunchPhase } = useClock();
+  const canEat = true;
   const { width, height } = useWindowSize();
   const phrase = useMemo(
     () => pickRandom(PHRASE_BY_PHASE[lunchPhase] as string[]),
