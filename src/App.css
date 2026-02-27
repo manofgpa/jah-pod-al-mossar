@@ -197,7 +197,7 @@
 
 /* ── Hero / Title ──────────────────────────────── */
 .app__pre-title {
-  font-size: clamp(1rem, 4vw, 2rem);
+  font-size: clamp(1.5rem, 5.5vw, 2.2rem);
   font-weight: 900;
   line-height: 1;
   margin: 0;
@@ -220,7 +220,7 @@
 }
 
 .app__title--big {
-  font-size: clamp(2.5rem, 10vw, 6rem);
+  font-size: clamp(3.2rem, 13vw, 7rem);
 }
 
 .app__title--two-lines {
