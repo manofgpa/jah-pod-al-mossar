@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase, isSupabaseConfigured } from '../lib/supabase';
+import { getBRTDateStr } from '../lib/date';
 
 export interface WeekEntry {
   date: string;
@@ -18,7 +19,7 @@ export function useWeekHistory(userId: string | null) {
 
     const sevenDaysAgo = new Date();
     sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 6);
-    const fromDate = sevenDaysAgo.toISOString().slice(0, 10);
+    const fromDate = getBRTDateStr(sevenDaysAgo);
 
     const [{ data: visits }, { data: ratings }] = await Promise.all([
       supabase
@@ -42,7 +43,7 @@ export function useWeekHistory(userId: string | null) {
     const result: WeekEntry[] = Array.from({ length: 7 }, (_, i) => {
       const d = new Date(today);
       d.setDate(d.getDate() - (6 - i));
-      const dateStr = d.toISOString().slice(0, 10);
+      const dateStr = getBRTDateStr(d);
       const restaurantName = visitMap[dateStr] ?? ratingMap[dateStr]?.restaurant ?? null;
       return {
         date: dateStr,

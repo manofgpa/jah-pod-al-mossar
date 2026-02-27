@@ -13,6 +13,7 @@ import { NameModal } from './components/NameModal';
 import { VoteTab } from './components/VoteTab';
 import { supabase, isSupabaseConfigured } from './lib/supabase';
 import { ORIGIN } from './data/restaurants';
+import { getBRTDateStr } from './lib/date';
 import './App.css';
 
 const NORMAL_PHRASES = [
@@ -282,9 +283,8 @@ function createSeededRng(seed: number): () => number {
   };
 }
 
-function getSuggestionIndicesForDate(date: Date, restaurantCount: number, barCount: number): { lunch: number; drink: number } {
-  const yyyyMmDd = date.toISOString().slice(0, 10);
-  const numericSeed = [...yyyyMmDd].reduce((acc, c) => acc * 31 + c.charCodeAt(0), 0);
+function getSuggestionIndicesForDate(dateStr: string, restaurantCount: number, barCount: number): { lunch: number; drink: number } {
+  const numericSeed = [...dateStr].reduce((acc, c) => acc * 31 + c.charCodeAt(0), 0);
   const rng = createSeededRng(numericSeed);
   return {
     lunch: Math.floor(rng() * restaurantCount),
@@ -348,23 +348,10 @@ function StreakBadge({ streak }: { streak: number }) {
 function WindowStatus({
   phase,
   minutesUntilOpen,
-  windowProgress,
 }: {
   phase: number;
   minutesUntilOpen: number;
-  windowProgress: number | null;
 }) {
-  if (windowProgress !== null) {
-    const urgent = windowProgress > 0.8;
-    return (
-      <div className="window-progress" title={`${Math.round(windowProgress * 100)}% da janela passou`}>
-        <div
-          className={`window-progress__fill${urgent ? ' window-progress__fill--urgent' : ''}`}
-          style={{ width: `${Math.min(windowProgress * 100, 100)}%` }}
-        />
-      </div>
-    );
-  }
   if (phase === 0 && minutesUntilOpen > 0) {
     return <p className="window-countdown">⏳ Faltam {formatMinutesUntil(minutesUntilOpen)}</p>;
   }
@@ -389,22 +376,22 @@ const WA_ICON = (
 
 export default function App() {
   const [mode, setMode] = useState<AppMode>('lunch');
-  const { canGo, formattedTime, phase, minutesUntilOpen, windowProgress } = useClock(mode);
+  const { canGo, formattedTime, phase, minutesUntilOpen } = useClock(mode);
   const { width, height } = useWindowSize();
   const phrase = useMemo(
     () => pickRandom((mode === 'lunch' ? PHRASE_BY_PHASE : PHRASE_BY_PHASE_DRINK)[phase] as string[]),
     [mode, phase],
   );
 
-  const todayUtc = new Date().toISOString().slice(0, 10);
+  const todayBRT = getBRTDateStr();
 
   // Restaurants from Supabase (falls back to hardcoded while loading)
   const { restaurants, bars } = useRestaurants();
 
   const suggestionIndices = useMemo(
-    () => getSuggestionIndicesForDate(new Date(), restaurants.length, bars.length),
+    () => getSuggestionIndicesForDate(todayBRT, restaurants.length, bars.length),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [todayUtc, restaurants.length, bars.length],
+    [todayBRT, restaurants.length, bars.length],
   );
   const restaurant = restaurants[suggestionIndices.lunch] ?? restaurants[0];
   const bar = bars[suggestionIndices.drink] ?? bars[0];
@@ -419,7 +406,7 @@ export default function App() {
 
   // Gamification
   const { streak, todayRating, visits, ratings, markVisit, rateToday } = useGameStats();
-  const visitedToday = visits.includes(todayUtc);
+  const visitedToday = visits.includes(todayBRT);
 
   // Notifications
   const { permission, requestPermission } = useNotifications();
@@ -437,25 +424,27 @@ export default function App() {
   const { entries: supabaseWeek, refetch: refetchWeek } = useWeekHistory(userId);
   const [historyOpen, setHistoryOpen] = useState(false);
   const weekHistory = useMemo(() => {
-    if (isSupabaseConfigured && userId && supabaseWeek.length > 0) {
-      return supabaseWeek;
-    }
-    // localStorage fallback
     const today = new Date();
+    // Build index for Supabase entries by date for O(1) lookup
+    const supabaseByDate: Record<string, typeof supabaseWeek[0]> = {};
+    supabaseWeek.forEach((e) => { supabaseByDate[e.date] = e; });
     return Array.from({ length: 7 }, (_, i) => {
       const d = new Date(today);
       d.setDate(d.getDate() - (6 - i));
-      const dateStr = d.toISOString().slice(0, 10);
-      const indices = getSuggestionIndicesForDate(d, restaurants.length, bars.length);
+      const dateStr = getBRTDateStr(d);
+      // Always derive restaurant name from seeded RNG so lunch/drink show different places
+      const indices = getSuggestionIndicesForDate(dateStr, restaurants.length, bars.length);
       const name =
         mode === 'lunch'
           ? (restaurants[indices.lunch] ?? restaurants[0])?.name ?? null
           : (bars[indices.drink] ?? bars[0])?.name ?? null;
+      // Use Supabase for visited/rating when available, else localStorage
+      const sb = supabaseByDate[dateStr];
       return {
         date: dateStr,
         restaurant: name,
-        rating: ratings[dateStr] ?? null,
-        visited: visits.includes(dateStr),
+        rating: sb?.rating ?? ratings[dateStr] ?? null,
+        visited: sb ? sb.visited : visits.includes(dateStr),
       };
     });
   }, [supabaseWeek, userId, visits, ratings, mode, restaurants, bars]);
@@ -468,7 +457,7 @@ export default function App() {
       await supabase
         .from('visits')
         .upsert(
-          { user_id: userId, visit_date: todayUtc, restaurant_name: name },
+          { user_id: userId, visit_date: todayBRT, restaurant_name: name },
           { onConflict: 'user_id,visit_date' },
         );
       refetchWeek();
@@ -483,7 +472,7 @@ export default function App() {
       await supabase
         .from('ratings')
         .upsert(
-          { user_id: userId, rating_date: todayUtc, restaurant_name: name, rating: r },
+          { user_id: userId, rating_date: todayBRT, restaurant_name: name, rating: r },
           { onConflict: 'user_id,rating_date' },
         );
       refetchWeek();
@@ -663,7 +652,6 @@ export default function App() {
         <WindowStatus
           phase={phase}
           minutesUntilOpen={minutesUntilOpen}
-          windowProgress={windowProgress}
         />
 
         {canGo && (

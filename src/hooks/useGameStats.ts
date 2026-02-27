@@ -1,4 +1,5 @@
 import { useState, useCallback } from 'react';
+import { getBRTDateStr } from '../lib/date';
 
 interface Stats {
   streak: number;
@@ -33,9 +34,9 @@ export function useGameStats() {
 
   const markVisit = useCallback(() => {
     setStats((prev) => {
-      const today = new Date().toISOString().slice(0, 10);
+      const today = getBRTDateStr();
       if (prev.lastVisitDate === today) return prev;
-      const yesterday = new Date(Date.now() - 86400000).toISOString().slice(0, 10);
+      const yesterday = getBRTDateStr(new Date(Date.now() - 86400000));
       const newStreak = prev.lastVisitDate === yesterday ? prev.streak + 1 : 1;
       const next: Stats = {
         ...prev,
@@ -50,7 +51,7 @@ export function useGameStats() {
 
   const rateToday = useCallback((r: 'up' | 'down') => {
     setStats((prev) => {
-      const today = new Date().toISOString().slice(0, 10);
+      const today = getBRTDateStr();
       const next: Stats = {
         ...prev,
         ratings: { ...prev.ratings, [today]: r },
@@ -60,7 +61,7 @@ export function useGameStats() {
     });
   }, []);
 
-  const todayStr = new Date().toISOString().slice(0, 10);
+  const todayStr = getBRTDateStr();
   const todayRating = stats.ratings[todayStr] ?? null;
 
   return {

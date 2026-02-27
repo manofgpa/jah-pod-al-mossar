@@ -1,7 +1,8 @@
 TODO's:
 
 [] Minigame de "geoguessr" chutando o restaurante ou bar correto baseado no mapa.
-[] Criar um area para sugestão de novos restaurantes ou bares.
-[] Consertar UIUX do site, principalmente mobile.
-[] Adicionar animação no POD ao clicar.
-[] Adicionar qual os top 3 restaurantes mais votados para a próxima janela.
+[] Criar um area para os usuários sugerirem novos restaurantes ou bares.
+[] Melhorar a experiência do usuário e design, principalmente mobile, mexendo nos ícones, posicoes etc. Deixa tudo mais simples, bonito e utilizavel.
+[] Adicionar animação de fumaça na palavra POD ao clicar.
+[] Adicionar qual os restaurantes votados para a próxima janela.
+[] Criar Login com username e senha, salvando no banco de dados e persistindo na sessão do usuário.
