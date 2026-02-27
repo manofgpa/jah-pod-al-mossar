@@ -9,8 +9,10 @@ import { useUser } from './hooks/useUser';
 import { useVotes } from './hooks/useVotes';
 import { useRestaurants } from './hooks/useRestaurants';
 import { useWeekHistory } from './hooks/useWeekHistory';
+import { useSuggestions } from './hooks/useSuggestions';
 import { NameModal } from './components/NameModal';
 import { VoteTab } from './components/VoteTab';
+import { SuggestForm } from './components/SuggestForm';
 import { supabase, isSupabaseConfigured } from './lib/supabase';
 import { ORIGIN } from './data/restaurants';
 import { getBRTDateStr } from './lib/date';
@@ -49,7 +51,7 @@ const NORMAL_PHRASES = [
   'Você já falou sozinho hoje. Merece comida.',
   'Come antes que transforme a fome em planilha.',
   'Seu corpo está rodando em modo avião há 6 horas.',
-  'Vai nutrir essa entidade biológica improvisada que você chama de “eu”.',
+  'Vai nutrir essa entidade biológica improvisada que você chama de "eu".',
   'Se continuar assim, você vai tentar versionar a sobremesa.',
   'Comer agora evita que você peça desculpa pro micro-ondas depois.',
   'Sua sombra acabou de sugerir arroz. Escute ela.',
@@ -361,12 +363,42 @@ function WindowStatus({
   return null;
 }
 
+function TopVoted({ votes, restaurants }: { votes: Record<string, number>; restaurants: { name: string }[] }) {
+  const entries = Object.entries(votes)
+    .filter(([, count]) => count > 0)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 3);
+
+  if (entries.length === 0) return null;
+
+  // Validate names exist in restaurant list
+  const validNames = new Set(restaurants.map(r => r.name));
+
+  return (
+    <div className="top-voted">
+      <h3 className="top-voted__title">🗳️ Mais votados para amanhã</h3>
+      <div className="top-voted__list">
+        {entries.map(([name, count], i) => (
+          <div key={name} className="top-voted__item">
+            <span className="top-voted__rank">{['🥇', '🥈', '🥉'][i]}</span>
+            <span className={`top-voted__name${!validNames.has(name) ? ' top-voted__name--unknown' : ''}`}>{name}</span>
+            <span className="top-voted__count">{count} {count === 1 ? 'voto' : 'votos'}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 const WHATSAPP_APP_URL = 'https://jah-pod-al-mossar.com.br';
+
+type ViewMode = 'main' | 'vote' | 'suggest';
 
 type PendingAction =
   | { type: 'visit' }
   | { type: 'rate'; rating: 'up' | 'down' }
-  | { type: 'vote'; restaurantName: string };
+  | { type: 'vote'; restaurantName: string }
+  | { type: 'suggest' };
 
 const WA_ICON = (
   <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18" aria-hidden>
@@ -412,13 +444,19 @@ export default function App() {
   const { permission, requestPermission } = useNotifications();
 
   // Identity & shared leaderboard
-  const { userId, isIdentified, identify } = useUser();
-  const [viewMode, setViewMode] = useState<'main' | 'vote'>('main');
+  const { userId, userName, isIdentified, signup, login, logout } = useUser();
+  const [viewMode, setViewMode] = useState<ViewMode>('main');
   const [showNameModal, setShowNameModal] = useState(false);
   const [pendingAction, setPendingAction] = useState<PendingAction | null>(null);
 
+  // Smoke animation
+  const [smokeKey, setSmokeKey] = useState(0);
+
   // Votes for tomorrow
   const { votes, myVote, loading: votesLoading, vote: submitVote, tomorrow } = useVotes(userId);
+
+  // Suggestions
+  const { suggestions, loading: suggestionsLoading, submitSuggestion } = useSuggestions(userId);
 
   // Week history: from Supabase when user is identified, else localStorage fallback
   const { entries: supabaseWeek, refetch: refetchWeek } = useWeekHistory(userId);
@@ -503,16 +541,23 @@ export default function App() {
     submitVote(restaurantName);
   };
 
-  const handleIdentify = async (name: string) => {
-    const ok = await identify(name);
-    if (ok) {
+  const handleAuth = async (username: string, email: string, password: string, isSignup: boolean) => {
+    const result = isSignup
+      ? await signup(username, email, password)
+      : await login(email, password);
+
+    if (result.ok) {
       setShowNameModal(false);
       const action = pendingAction;
       setPendingAction(null);
-      if (action?.type === 'visit') doMarkVisit();
-      if (action?.type === 'rate') doRateToday(action.rating);
-      if (action?.type === 'vote') submitVote(action.restaurantName);
+      // Execute pending action after a short delay to let auth state settle
+      setTimeout(() => {
+        if (action?.type === 'visit') doMarkVisit();
+        if (action?.type === 'rate') doRateToday(action.rating);
+        if (action?.type === 'vote') submitVote(action.restaurantName);
+      }, 500);
     }
+    return result;
   };
 
   // WhatsApp share
@@ -530,7 +575,10 @@ export default function App() {
   <>
     <div className={`app ${canGo ? 'app--success' : 'app--failure'}`}>
       <header className="app__top-bar">
-        <p className="app__clock" aria-live="polite">{formattedTime}</p>
+        <div className="app__top-bar__left">
+          <p className="app__clock" aria-live="polite">{formattedTime}</p>
+          <StreakBadge streak={streak} />
+        </div>
         <div className="app__top-bar__controls">
           <div className="mode-switch" role="tablist" aria-label="Modo">
             <button
@@ -563,6 +611,16 @@ export default function App() {
               <span className="mode-switch__ico" aria-hidden>🗳️</span>
               <span className="mode-switch__lbl">Votar</span>
             </button>
+            <button
+              type="button"
+              role="tab"
+              aria-selected={viewMode === 'suggest'}
+              className={`mode-switch__btn ${viewMode === 'suggest' ? 'mode-switch__btn--active' : ''}`}
+              onClick={() => setViewMode('suggest')}
+            >
+              <span className="mode-switch__ico" aria-hidden>💡</span>
+              <span className="mode-switch__lbl">Sugerir</span>
+            </button>
           </div>
           <Link to="/leaderboard" className="lb-link" title="Leaderboard">🏆</Link>
           <button
@@ -580,6 +638,17 @@ export default function App() {
           >
             🔔
           </button>
+          {isIdentified && (
+            <button
+              type="button"
+              className="logout-btn"
+              onClick={logout}
+              title={`Sair (${userName})`}
+              aria-label="Sair"
+            >
+              🚪
+            </button>
+          )}
         </div>
       </header>
 
@@ -614,9 +683,15 @@ export default function App() {
       )}
 
       <div className="app__content">
-        <StreakBadge streak={streak} />
-
-        {viewMode === 'vote' ? (
+        {viewMode === 'suggest' ? (
+          <SuggestForm
+            suggestions={suggestions}
+            loading={suggestionsLoading}
+            onSubmit={submitSuggestion}
+            isIdentified={isIdentified}
+            onRequireLogin={() => requireIdentity({ type: 'suggest' })}
+          />
+        ) : viewMode === 'vote' ? (
           <VoteTab
             restaurants={restaurants}
             votes={votes}
@@ -629,7 +704,9 @@ export default function App() {
         <>
 
         <p className="app__pre-title" aria-hidden>
-          {canGo ? 'JAH POD' : '🤔'}
+          {canGo ? (
+            <>JAH <span className={`pod-text${smokeKey ? ' pod-smoke' : ''}`} onClick={() => setSmokeKey(k => k + 1)} key={smokeKey}>POD</span></>
+          ) : '🤔'}
         </p>
 
         <div className={`app__hero ${canGo ? 'app__hero--success' : 'app__hero--failure'}`}>
@@ -639,7 +716,7 @@ export default function App() {
             </h1>
           ) : (
             <h1 className="app__title app__title--big app__title--two-lines">
-              <span className="app__title-line">NON POD</span>
+              <span className="app__title-line">NON <span className={`pod-text${smokeKey ? ' pod-smoke' : ''}`} onClick={() => setSmokeKey(k => k + 1)} key={smokeKey}>POD</span></span>
               <span className="app__title-line">
                 {mode === 'lunch' ? 'AL-MOSSAR!' : 'BEBER!'}
               </span>
@@ -728,7 +805,7 @@ export default function App() {
                   className="whatsapp-btn"
                 >
                   {WA_ICON}
-                  Compartilhar
+                  <span className="whatsapp-btn__label">Compartilhar</span>
                 </a>
               </div>
             </div>
@@ -745,6 +822,7 @@ export default function App() {
                 referrerPolicy="no-referrer-when-downgrade"
               />
             </div>
+
           </section>
         )}
 
@@ -780,7 +858,7 @@ export default function App() {
     </div>
     {showNameModal && (
       <NameModal
-        onSubmit={handleIdentify}
+        onAuth={handleAuth}
         onClose={() => { setShowNameModal(false); setPendingAction(null); }}
       />
     )}

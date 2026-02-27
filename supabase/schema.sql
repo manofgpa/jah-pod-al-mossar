@@ -188,3 +188,21 @@ INSERT INTO restaurants (name, cuisine, description, address, type, sort_order) 
   ('Cervejaria Nacional', 'Bar', 'Cervejas artesanais e petiscos.', 'Rua dos Pinheiros, 898, Pinheiros, São Paulo, SP', 'drink', 120),
   ('Bar da Dona Onça', 'Bar', 'Bar com vista e drinks especiais.', 'Avenida Pedroso de Morais, 1938, Pinheiros, São Paulo, SP', 'drink', 121),
   ('Boteco do Alemão', 'Bar', 'Boteco com chopp e ambiente descolado.', 'Rua Teodoro Sampaio, 2092, Pinheiros, São Paulo, SP', 'drink', 122);
+
+-- Auth integration: link users to Supabase Auth
+ALTER TABLE users ADD COLUMN auth_id UUID UNIQUE REFERENCES auth.users(id);
+
+-- Suggestions table
+CREATE TABLE suggestions (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  name TEXT NOT NULL,
+  address TEXT NOT NULL,
+  type TEXT NOT NULL CHECK (type IN ('lunch', 'drink')),
+  cuisine TEXT DEFAULT '',
+  description TEXT DEFAULT '',
+  status TEXT DEFAULT 'pending' CHECK (status IN ('pending', 'approved', 'rejected')),
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+ALTER TABLE suggestions ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "public_all" ON suggestions USING (true) WITH CHECK (true);

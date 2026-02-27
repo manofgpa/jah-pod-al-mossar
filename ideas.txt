@@ -1,8 +1,8 @@
 TODO's:
 
-[] Minigame de "geoguessr" chutando o restaurante ou bar correto baseado no mapa.
+[] Criar Login com username e senha, salvando no banco de dados e persistindo na sessão do usuário.
 [] Criar um area para os usuários sugerirem novos restaurantes ou bares.
-[] Melhorar a experiência do usuário e design, principalmente mobile, mexendo nos ícones, posicoes etc. Deixa tudo mais simples, bonito e utilizavel.
 [] Adicionar animação de fumaça na palavra POD ao clicar.
 [] Adicionar qual os restaurantes votados para a próxima janela.
-[] Criar Login com username e senha, salvando no banco de dados e persistindo na sessão do usuário.
+[] Minigame de "geoguessr" chutando o restaurante ou bar correto baseado no mapa.
+[] Melhorar a experiência do usuário e design, principalmente mobile, mexendo nos ícones, posicoes etc. Deixa tudo mais simples, bonito e utilizavel.
