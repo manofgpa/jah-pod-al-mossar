@@ -2,6 +2,7 @@ import { useMemo, useState, useEffect } from 'react';
 import Confetti from 'react-confetti';
 import { useWindowSize } from 'react-use';
 import { Link } from 'react-router-dom';
+import { Analytics } from '@vercel/analytics/react';
 import { useClock, type AppMode } from './hooks/useClock';
 import { useGameStats } from './hooks/useGameStats';
 import { useNotifications } from './hooks/useNotifications';
@@ -835,6 +836,7 @@ export default function App() {
         onClose={() => { setShowNameModal(false); setPendingAction(null); }}
       />
     )}
+    <Analytics />
   </>
   );
 }
