@@ -548,60 +548,18 @@ export default function App() {
   return (
   <>
     <div className={`app ${canGo ? 'app--success' : 'app--failure'}`}>
-      <header className="app__top-bar">
-        <div className="app__top-bar__left">
-          <p className="app__clock" aria-live="polite">{formattedTime}</p>
+      <header className="top-bar">
+        <div className="top-bar__left">
+          <p className="top-bar__clock" aria-live="polite">{formattedTime}</p>
           <StreakBadge streak={streak} />
         </div>
-        <div className="app__top-bar__controls">
-          <div className="mode-switch" role="tablist" aria-label="Modo">
-            <button
-              type="button"
-              role="tab"
-              aria-selected={mode === 'lunch' && viewMode === 'main'}
-              className={`mode-switch__btn ${mode === 'lunch' && viewMode === 'main' ? 'mode-switch__btn--active' : ''}`}
-              onClick={() => { setMode('lunch'); setViewMode('main'); }}
-            >
-              <span className="mode-switch__ico" aria-hidden>🍽️</span>
-              <span className="mode-switch__lbl">Al-mossar</span>
-            </button>
-            <button
-              type="button"
-              role="tab"
-              aria-selected={mode === 'drink' && viewMode === 'main'}
-              className={`mode-switch__btn ${mode === 'drink' && viewMode === 'main' ? 'mode-switch__btn--active' : ''}`}
-              onClick={() => { setMode('drink'); setViewMode('main'); }}
-            >
-              <span className="mode-switch__ico" aria-hidden>🍺</span>
-              <span className="mode-switch__lbl">Beber</span>
-            </button>
-            <button
-              type="button"
-              role="tab"
-              aria-selected={viewMode === 'vote'}
-              className={`mode-switch__btn ${viewMode === 'vote' ? 'mode-switch__btn--active' : ''}`}
-              onClick={() => setViewMode('vote')}
-            >
-              <span className="mode-switch__ico" aria-hidden>🗳️</span>
-              <span className="mode-switch__lbl">Votar</span>
-            </button>
-            <button
-              type="button"
-              role="tab"
-              aria-selected={viewMode === 'suggest'}
-              className={`mode-switch__btn ${viewMode === 'suggest' ? 'mode-switch__btn--active' : ''}`}
-              onClick={() => setViewMode('suggest')}
-            >
-              <span className="mode-switch__ico" aria-hidden>💡</span>
-              <span className="mode-switch__lbl">Sugerir</span>
-            </button>
-          </div>
+        <div className="top-bar__right">
           {isIdentified ? (
-            <Link to="/leaderboard" className="lb-link" title="Leaderboard">🏆</Link>
+            <Link to="/leaderboard" className="top-bar__icon" title="Leaderboard">🏆</Link>
           ) : (
             <button
               type="button"
-              className="lb-link"
+              className="top-bar__icon"
               title="Leaderboard (faça login)"
               onClick={() => requireIdentity({ type: 'visit' })}
             >
@@ -610,7 +568,7 @@ export default function App() {
           )}
           <button
             type="button"
-            className={`notif-btn${permission === 'granted' ? ' notif-btn--active' : ''}`}
+            className={`top-bar__icon${permission === 'granted' ? ' top-bar__icon--active' : ''}`}
             onClick={requestPermission}
             title={
               permission === 'denied'
@@ -626,7 +584,7 @@ export default function App() {
           {isIdentified && (
             <button
               type="button"
-              className="logout-btn"
+              className="top-bar__icon"
               onClick={logout}
               title={`Sair (${userName})`}
               aria-label="Sair"
@@ -840,6 +798,49 @@ export default function App() {
         </>
         )}
       </div>
+
+      <nav className="bottom-nav" role="tablist" aria-label="Navegação">
+        <button
+          type="button"
+          role="tab"
+          aria-selected={mode === 'lunch' && viewMode === 'main'}
+          className={`bottom-nav__btn${mode === 'lunch' && viewMode === 'main' ? ' bottom-nav__btn--active' : ''}`}
+          onClick={() => { setMode('lunch'); setViewMode('main'); }}
+        >
+          <span className="bottom-nav__ico" aria-hidden>🍽️</span>
+          <span className="bottom-nav__lbl">Al-mossar</span>
+        </button>
+        <button
+          type="button"
+          role="tab"
+          aria-selected={mode === 'drink' && viewMode === 'main'}
+          className={`bottom-nav__btn${mode === 'drink' && viewMode === 'main' ? ' bottom-nav__btn--active' : ''}`}
+          onClick={() => { setMode('drink'); setViewMode('main'); }}
+        >
+          <span className="bottom-nav__ico" aria-hidden>🍺</span>
+          <span className="bottom-nav__lbl">Beber</span>
+        </button>
+        <button
+          type="button"
+          role="tab"
+          aria-selected={viewMode === 'vote'}
+          className={`bottom-nav__btn${viewMode === 'vote' ? ' bottom-nav__btn--active' : ''}`}
+          onClick={() => setViewMode('vote')}
+        >
+          <span className="bottom-nav__ico" aria-hidden>🗳️</span>
+          <span className="bottom-nav__lbl">Votar</span>
+        </button>
+        <button
+          type="button"
+          role="tab"
+          aria-selected={viewMode === 'suggest'}
+          className={`bottom-nav__btn${viewMode === 'suggest' ? ' bottom-nav__btn--active' : ''}`}
+          onClick={() => setViewMode('suggest')}
+        >
+          <span className="bottom-nav__ico" aria-hidden>💡</span>
+          <span className="bottom-nav__lbl">Sugerir</span>
+        </button>
+      </nav>
     </div>
     {showNameModal && (
       <NameModal

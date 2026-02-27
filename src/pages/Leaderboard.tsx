@@ -41,10 +41,6 @@ export default function Leaderboard() {
   const [loading, setLoading] = useState(true);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
 
-  if (!userLoading && !isIdentified) {
-    return <Navigate to="/" replace />;
-  }
-
   useEffect(() => {
     if (!isSupabaseConfigured) {
       setLoading(false);
@@ -52,6 +48,10 @@ export default function Leaderboard() {
     }
     fetchAll();
   }, []);
+
+  if (!userLoading && !isIdentified) {
+    return <Navigate to="/" replace />;
+  }
 
   async function fetchAll() {
     setLoading(true);
