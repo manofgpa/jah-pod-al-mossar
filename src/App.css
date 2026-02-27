@@ -911,9 +911,15 @@
   white-space: nowrap;
 }
 
-.top-voted__name--unknown {
-  opacity: 0.6;
-  font-style: italic;
+.top-voted__item--mine {
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  padding: 0.4rem 0.5rem;
+  margin: 0 -0.5rem;
+}
+
+.top-voted--full .top-voted__list {
+  gap: 0.25rem;
 }
 
 .top-voted__count {
@@ -921,6 +927,25 @@
   font-size: 0.75rem;
   opacity: 0.7;
   font-weight: 600;
+}
+
+/* ── Vote change button ─────────────────────────────── */
+.vote-change-btn {
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  border-radius: 12px;
+  padding: 0.7rem 1.2rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+  min-height: 48px;
+  width: 100%;
+}
+
+.vote-change-btn:hover {
+  background: rgba(255, 255, 255, 0.25);
 }
 
 /* ── Suggest tab ────────────────────────────────────── */
