@@ -363,33 +363,6 @@ function WindowStatus({
   return null;
 }
 
-function TopVoted({ votes, restaurants }: { votes: Record<string, number>; restaurants: { name: string }[] }) {
-  const entries = Object.entries(votes)
-    .filter(([, count]) => count > 0)
-    .sort((a, b) => b[1] - a[1])
-    .slice(0, 3);
-
-  if (entries.length === 0) return null;
-
-  // Validate names exist in restaurant list
-  const validNames = new Set(restaurants.map(r => r.name));
-
-  return (
-    <div className="top-voted">
-      <h3 className="top-voted__title">🗳️ Mais votados para amanhã</h3>
-      <div className="top-voted__list">
-        {entries.map(([name, count], i) => (
-          <div key={name} className="top-voted__item">
-            <span className="top-voted__rank">{['🥇', '🥈', '🥉'][i]}</span>
-            <span className={`top-voted__name${!validNames.has(name) ? ' top-voted__name--unknown' : ''}`}>{name}</span>
-            <span className="top-voted__count">{count} {count === 1 ? 'voto' : 'votos'}</span>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
 const WHATSAPP_APP_URL = 'https://jah-pod-al-mossar.com.br';
 
 type ViewMode = 'main' | 'vote' | 'suggest';
