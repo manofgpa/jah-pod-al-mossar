@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { Analytics } from '@vercel/analytics/react';
 import { supabase, isSupabaseConfigured } from '../lib/supabase';
 
 function calcStreak(dates: string[]): number {
@@ -105,8 +106,9 @@ export default function Leaderboard() {
   };
 
   return (
-    <div className="lb-page">
-      <div className="leaderboard">
+    <>
+      <div className="lb-page">
+        <div className="leaderboard">
         <header className="leaderboard__header">
           <Link to="/" className="leaderboard__back">← Voltar</Link>
           <h1 className="leaderboard__title">🏆 Leaderboard</h1>
@@ -174,7 +176,9 @@ export default function Leaderboard() {
             )}
           </>
         )}
+        </div>
       </div>
-    </div>
+      <Analytics />
+    </>
   );
 }
