@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, Navigate } from 'react-router-dom';
 import { Analytics } from '@vercel/analytics/react';
 import { supabase, isSupabaseConfigured } from '../lib/supabase';
+import { useUser } from '../hooks/useUser';
 
 function calcStreak(dates: string[]): number {
   if (dates.length === 0) return 0;
@@ -34,10 +35,15 @@ interface RestaurantRating {
 }
 
 export default function Leaderboard() {
+  const { isIdentified, loading: userLoading } = useUser();
   const [users, setUsers] = useState<UserRow[]>([]);
   const [ratings, setRatings] = useState<RestaurantRating[]>([]);
   const [loading, setLoading] = useState(true);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
+
+  if (!userLoading && !isIdentified) {
+    return <Navigate to="/" replace />;
+  }
 
   useEffect(() => {
     if (!isSupabaseConfigured) {

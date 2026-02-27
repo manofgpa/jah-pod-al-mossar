@@ -596,7 +596,18 @@ export default function App() {
               <span className="mode-switch__lbl">Sugerir</span>
             </button>
           </div>
-          <Link to="/leaderboard" className="lb-link" title="Leaderboard">🏆</Link>
+          {isIdentified ? (
+            <Link to="/leaderboard" className="lb-link" title="Leaderboard">🏆</Link>
+          ) : (
+            <button
+              type="button"
+              className="lb-link"
+              title="Leaderboard (faça login)"
+              onClick={() => requireIdentity({ type: 'visit' })}
+            >
+              🏆
+            </button>
+          )}
           <button
             type="button"
             className={`notif-btn${permission === 'granted' ? ' notif-btn--active' : ''}`}
