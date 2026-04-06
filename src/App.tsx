@@ -554,6 +554,7 @@ export default function App() {
           <StreakBadge streak={streak} />
         </div>
         <div className="top-bar__right">
+          <a href="https://www.siterastreio.com.br/" target="_blank" rel="noopener noreferrer" className="top-bar__icon" title="Rastreamento">📦</a>
           {isIdentified ? (
             <Link to="/leaderboard" className="top-bar__icon" title="Leaderboard">🏆</Link>
           ) : (
